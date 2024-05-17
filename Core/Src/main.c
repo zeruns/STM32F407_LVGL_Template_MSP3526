@@ -18,7 +18,9 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "i2c.h"
 #include "spi.h"
+#include "tim.h"
 #include "usart.h"
 #include "gpio.h"
 
@@ -45,7 +47,8 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+// 毫秒计时变量
+volatile uint16_t ms_cnt_1 = 0; // 计时变量1
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -90,7 +93,10 @@ int main(void)
   MX_GPIO_Init();
   MX_SPI2_Init();
   MX_USART1_UART_Init();
+  MX_I2C1_Init();
+  MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
+  HAL_TIM_Base_Start_IT(&htim3);            // 启动定时器3和定时器中断，1Hz
 
   /* USER CODE END 2 */
 
@@ -99,8 +105,13 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
+    
     /* USER CODE BEGIN 3 */
+    if (ms_cnt_1 >= 500) // 判断是否计时到500ms
+    {
+      ms_cnt_1 = 0;                                   // 计时清零
+      HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin); // LED2电平翻转
+    }
   }
   /* USER CODE END 3 */
 }
@@ -155,7 +166,13 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  if (htim->Instance == TIM3) // 定时器TIM3，中断时间1ms
+  {
+    ms_cnt_1++;
+  }
+}
 /* USER CODE END 4 */
 
 /**

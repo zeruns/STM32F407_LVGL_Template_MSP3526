@@ -3,7 +3,6 @@
     "beforeBuildTasks": [],
     "afterBuildTasks": [],
     "global": {
-        "use-microLIB": true,
         "output-debug-info": "enable"
     },
     "c/cpp-compiler": {
@@ -16,9 +15,6 @@
     },
     "asm-compiler": {},
     "linker": {
-        "output-format": "elf",
-        "xo-base": "",
-        "ro-base": "",
-        "rw-base": ""
+        "output-format": "elf"
     }
 }
