@@ -1,0 +1,79 @@
+This is an Virtual COM example that demonstrates Communication Device Class (CDC)
+Abstract Control Model (ACM) on USB Device.
+
+It demonstrates a bridge between USB Virtual COM Port and UART port on the
+evaluation board.
+
+Detailed description is available on:
+www.keil.com/pack/doc/MW/USB/html/dev_cdc_tutorial.html
+
+Board:                  Keil  'MCBSTM32F400'
+Microcontroller:        ST       'STM32F407'
+Clock Settings:         XTAL       =  25 MHz
+                        CPUCLK     = 168 MHz
+                        USB FS CLK =  48 MHz
+                        USB HS CLK =  60 MHz (from external ULPI PHY)
+Bridge functionality:   USBFS <-> UART1 (set jumpers J13 and J14 accordingly)
+                        USBHS <-> UART3 (set jumpers J13 and J14 accordingly)
+
+The PC will install a Virtual COM Port on the PC (see Driver Installation).
+After installation an additional port "MCBSTM32F400 USB VCOM Port(COMx)"
+can be found under System/Hardware/Device Manager/Ports(COM&LPT).
+Number "x" is not fixed as different PC configuration may have different
+"x" displayed in the device manager. The USB Host driver assigns "x"
+dynamically based on the existing COM port configuration in the system.
+
+Testing the USB Virtual COM Port:
+
+  Connect USB Host PC with USB cable to USBFS/USBHS connector on the embedded board.
+  Connect PC UART Port with UART cable to UART1/3/4 connector on the embedded board.
+  Open two Serial Terminal applications in Windows:
+    -  one with "MCBSTM32F400 USB VCOM Port(COMx)"
+    -  one with PC UART Port
+  Data sent from one Serial Terminal application should be received in other and vice versa.
+
+The program is available in different targets:
+ - Debug:
+   - Compiler:                  ARM Compiler optimization Level 1
+   - Compiler:Event Recorder:   Enabled
+   - CMSIS:RTOS2:Keil RTX5:     Source
+   - USB:CORE:                  Debug
+ - Release:
+   - Compiler:                  ARM Compiler optimization Level 3
+   - Compiler:Event Recorder:   Disabled
+   - CMSIS:RTOS2:Keil RTX5:     Library
+   - USB:CORE:                  Release
+
+Important Note: MCBSTM32F400 does not have routed flow control pins on the UART
+                so it is possible that this example will loose characters
+                because of not using flow control
+
+Driver Files:
+-------------
+    - mcbstm32f4xx-vcom.inf : Driver setup information.
+    - mcbstm32f4xx-vcom.cat : Digitally signed driver catalog file for Host PCs.
+
+Note : Digitally signing of the driver catalog file is required to install
+drivers on 64-bit PCs using Windows Vista or later Windows versions. Please
+refer to Microsoft documentation for further information.
+
+Driver Installation:
+--------------------
+     "Welcome to the Found New Hardware Wizard" appears
+     - select 'No, not this time'
+     - press  'Next'
+
+     - select 'Install from a list or specific location (Advanced)'
+     - press  'Next'
+
+     - select 'Search for the best driver in these locations'
+     - check  'include this location in the search'
+     - set to <project folder>
+     - press 'Next'
+
+     "Hardware Installation" appears
+     "has not passed Windows Logo testing..."
+     - press 'Continue Anyway'
+
+     "Completing the Found New Hardware Wizard" appears
+     - press 'Finish'

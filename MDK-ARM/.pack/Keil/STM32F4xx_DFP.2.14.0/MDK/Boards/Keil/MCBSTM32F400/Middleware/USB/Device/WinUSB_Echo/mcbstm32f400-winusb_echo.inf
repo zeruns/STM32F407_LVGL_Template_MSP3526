@@ -1,0 +1,73 @@
+;------------------------------------------------------------------------------
+; Copyright © ARM Ltd and ARM Germany GmbH
+; Communication Device Class driver installation file
+;------------------------------------------------------------------------------
+
+;------------------------------------------------------------------------------
+; Header \ Description
+;------------------------------------------------------------------------------
+[Version]
+Signature   = "$Windows NT$"
+Class       = USBDevice
+ClassGUID   = {88BAE032-5A81-49f0-BC3D-A4FF138216D6}
+Provider    = %Manufacturer%
+DriverVer   = 07/10/2019,1.0.0.0
+CatalogFile = mcbstm32f400-winusb_echo.cat
+
+;------------------------------------------------------------------------------
+; Manufacturer/Models sections
+;------------------------------------------------------------------------------
+[Manufacturer]
+%Manufacturer%      = DeviceList, NTamd64, NTx86
+
+;------------------------------------------------------------------------------
+; Decoration for x86 architecture
+;------------------------------------------------------------------------------
+[DeviceList.NTx86]
+%DeviceName0% = USB_Install, USB\VID_c251&PID_3507
+%DeviceName1% = USB_Install, USB\VID_c251&PID_3517
+
+;------------------------------------------------------------------------------
+; Decoration for x64 architecture
+;------------------------------------------------------------------------------
+[DeviceList.NTamd64]
+%DeviceName0% = USB_Install, USB\VID_c251&PID_3507
+%DeviceName1% = USB_Install, USB\VID_c251&PID_3517
+
+;------------------------------------------------------------------------------
+; Class definition
+;------------------------------------------------------------------------------
+[ClassInstall32]
+AddReg = ClassInstall_AddReg
+
+[ClassInstall_AddReg]
+HKR,,,,%ClassName%
+HKR,,NoInstallClass,,1
+HKR,,IconPath,%REG_MULTI_SZ%,"%systemroot%\system32\setupapi.dll,-20"
+HKR,,LowerLogoVersion,,5.2
+
+;------------------------------------------------------------------------------
+; Installation
+;------------------------------------------------------------------------------
+[USB_Install]
+Include = winusb.inf
+Needs = WINUSB.NT
+
+[USB_Install.Services]
+Include = winusb.inf
+Needs = WINUSB.NT.Services
+
+[USB_Install.HW]
+AddReg = Dev_AddReg
+
+[Dev_AddReg]
+HKR,,DeviceInterfaceGUIDs,0x10000,"{7D9ADCFC-E570-4B38-BF4E-8F81F68964E0}"
+
+;------------------------------------------------------------------------------
+; String Definitions
+;------------------------------------------------------------------------------
+[Strings]
+Manufacturer = "ARM Germany GmbH"
+ClassName    = "Universal Serial Bus devices"
+DeviceName0  = "WinUSB Bulk Echo"
+DeviceName1  = "WinUSB Bulk Echo"

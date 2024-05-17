@@ -1,0 +1,62 @@
+This is an Custom Class example that demonstrates WinUSB Class
+on USB Device.
+
+The example demonstrates a WinUSB device that contains Bulk IN and 
+Bulk OUT endpoints, everything that device receives on Bulk OUT 
+endpoint it echoes back on Bulk IN endpoint.
+
+Detailed description is available on:
+www.keil.com/pack/doc/MW/USB/html/dev_cc_tutorial.html
+
+Board:                  Keil  'MCBSTM32F400'
+Microcontroller:        ST       'STM32F407'
+Clock Settings:         XTAL       =  25 MHz
+                        CPUCLK     = 168 MHz
+                        USB FS CLK =  48 MHz
+                        USB HS CLK =  60 MHz (from external ULPI PHY)
+
+After device is connected on Win8 and later, device driver will be 
+installed automatically. On Win7 user has to select driver file can 
+be found in project folder.
+After device is installed in Windows it can be tested by PC application 
+WinUSB_Test (.\ARM\PACK\Keil\MDK-Middleware\x.y.z\Utilities\WinUSB_Test\Release\WinUSB_Test.exe).
+
+Note: The GUID that is used in Windows to access the device is configured 
+in 3 places. First place it is configured on the device in USBD_Config_n.c 
+file. Second place it is configured in mcbstm32f400-winusb_echo.inf 
+driver information file.
+Third place it is configured is in WinUSB_Test PC application.
+To generate unique GUID follow the procedure described on the following 
+web page: https://msdn.microsoft.com/en-us/library/ms241442(v=vs.80).aspx
+
+The program is available in different targets:
+ - Debug:
+   - Compiler:                  ARM Compiler optimization Level 1
+   - Compiler:Event Recorder:   Enabled
+   - CMSIS:RTOS2:Keil RTX5:     Source
+   - USB:CORE:                  Debug
+ - Release:
+   - Compiler:                  ARM Compiler optimization Level 3
+   - Compiler:Event Recorder:   Disabled
+   - CMSIS:RTOS2:Keil RTX5:     Library
+   - USB:CORE:                  Release
+
+Driver Files:
+-------------
+  - mcbstm32f400-winusb_echo.inf : Driver setup information.
+  - mcbstm32f400-winusb_echo.cat : Digitally signed driver catalog file for Host PCs.
+
+Note : Digitally signing of the driver catalog file is required to install
+drivers on 64-bit PCs using Windows Vista or later Windows versions. Please
+refer to Microsoft documentation for further information.
+
+Driver Installation:
+--------------------
+If Windows PC is connected to Internet and if in Device Installation Settings 
+(Start->Devices and Printers-right mouse click on Computer icon->Device Installation Settings)
+appropriate setting is selected (any except Never install driver software from Windows Update)
+for high-speed device driver will install automatically.
+For full-speed device or if driver isn't installed automatically, you should go to 
+Start->Devices and Printers-right mouse click on new device->Properties->Hardware
+->Properties->Update Driver->Browse my computer for driver software
+then navigate to <project folder> and click on Next

@@ -1,0 +1,37 @@
+This is a File System file manipulation example.
+You can create, read, copy and delete files on any enabled
+drive (SD/MMC Card, NOR/NAND Flash) and format each drive.
+
+Detailed description is available on:
+www.keil.com/pack/doc/MW/FileSystem/html/fs_examples.html#fs_standalone_example
+
+The File_Demo program is a standalone application preconfigured for
+Keil MCBSTM32F400 Board using ULink2 Debugger and ITM debug
+port as a communication interface.
+
+You can test it from uVision Debug Session:
+  Start Debug session (Ctrl + F5) and open Debug (printf)
+  Viewer (View->Serial Windows->Debug (printf) Viewer).
+
+The File_Demo program is available in different targets:
+ - Debug:
+   - Compiler:                  ARM Compiler optimization Level 1
+   - Compiler:Event Recorder:   Enabled
+   - CMSIS:RTOS2:Keil RTX5:     Source
+   - File System:CORE:          LFN Debug
+ - Release:
+   - Compiler:                  ARM Compiler optimization Level 3
+   - Compiler:Event Recorder:   Disabled
+   - CMSIS:RTOS2:Keil RTX5:     Library
+   - File System:CORE           LFN
+
+Jumper Settings:
+    Memory Bus address lines A19, A20 and A21 are shared with TRACE
+    lines. Jumpers J10, J11 and J12 should select address lines to
+    enable NOR drive functionality.
+
+Note:
+  - Flash prefetch accelerator should be disabled if the example
+    experiences functionality issues when using STM32F407 device
+    revision A. Please, refer to http://www.keil.com/support/docs/3640.htm
+  - M29W640FB Flash driver base address is at 0x60000000.

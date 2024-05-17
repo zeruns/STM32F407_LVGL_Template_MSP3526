@@ -1,0 +1,44 @@
+The 'Demo' project is a demo program for the STM32F407 microcontroller
+using Keil 'MCBSTM32F400' Evaluation Board, compliant to Cortex
+Microcontroller Software Interface Standard (CMSIS).
+
+Example functionality:
+ - Clock Settings:
+   - XTAL    =           25.00 MHz
+   - SYSCLK  =          168.00 MHz
+
+ - Graphical LCD display shows three possible example modes
+
+   Display shows:
+    a) - 12-bit AD converter value bargraph depending on potentiometer position
+       - State of buttons
+       - Joystick directions
+       - Touchscreen dependent images
+    
+    b) - Accelerometer output
+       - Gyroscope output
+
+    c) - Digital camera output stream
+
+
+Press or hold the WAKEUP key to change between example modes.
+
+The Demo program is available in different targets:
+ - Debug:
+   - Compiler:                  ARM Compiler optimization Level 1
+   - Compiler:Event Recorder:   Enabled
+   - CMSIS:RTOS2:Keil RTX5:     Source
+ - Release:
+   - Compiler:                  ARM Compiler optimization Level 3
+   - Compiler:Event Recorder:   Disabled
+   - CMSIS:RTOS2:Keil RTX5:     Library
+
+Jumper settings:
+  - J17 must be shorted to enable digital camera
+
+Note:
+  This Demo example program exceeds MDK-ARM Lite Edition codesize limitation
+  and therefore it cannot be rebuild. Prebuild image is available for
+  MDK-ARM Lite Edition users: do not try to Build or Rebuild the example,
+  just connect the evaluation board, press the Download button and
+  example should start running.

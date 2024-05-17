@@ -1,0 +1,12 @@
+This is a simple example which shows how to setup emWin Graphic Library
+for the Keil MCBSTM32F400 Evaluation Board.
+
+The emWin Example is available in different targets:
+ - Debug:
+   - Compiler:                  ARM Compiler optimization Level 1
+   - Compiler:Event Recorder:   Enabled
+   - CMSIS:RTOS2:Keil RTX5:     Source
+ - Release:
+   - Compiler:                  ARM Compiler optimization Level 3
+   - Compiler:Event Recorder:   Disabled
+   - CMSIS:RTOS2:Keil RTX5:     Library

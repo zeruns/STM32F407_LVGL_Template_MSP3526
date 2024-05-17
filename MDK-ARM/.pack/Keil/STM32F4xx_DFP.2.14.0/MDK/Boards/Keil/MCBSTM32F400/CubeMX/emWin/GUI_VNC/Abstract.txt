@@ -1,0 +1,36 @@
+This is a GUI and VNC Server example.
+
+Use this example to connect an evaluation board to a LAN with DHCP server (most
+LANs have this). The example will configure the network parameters
+automatically using a DHCP protocol.
+
+If a DHCP server is not available, you may connect an evaluation board to PC
+directly over a crosslink network cable. In this case configure a PC to use a
+static IP address 192.168.0.1 and disable a 'Dynamic Host Configuration' in
+Net_Config.c configuration file. The default static IP address of this example
+is set to 192.168.0.100 in Net_Config_ETH_0.h.
+
+To test this example, download the VNC Viewer from
+https://www.realvnc.com/download/viewer/ and run it. Enter mcbstm32f400 for the VNC
+Server or the respective IP address. You'll be able to toggle the board LED
+using the VNC Viewer or the graphical UI displayed on the LCD TFT.
+
+The emWin GUI_VNC example is available in different targets:
+ - Debug:
+   - Compiler:                  ARM Compiler optimization Level 1
+   - Compiler:Event Recorder:   Enabled
+   - CMSIS:RTOS2:Keil RTX5:     Source
+   - Network:CORE:              IPv4/IPv6 Debug
+ - Release:
+   - Compiler:                  ARM Compiler optimization Level 3
+   - Compiler:Event Recorder:   Disabled
+   - CMSIS:RTOS2:Keil RTX5:     Library
+   - Network:CORE:              IPv4/IPv6 Release
+
+Note:
+  - MCBSTM32F400 V1.2: KSZ8081RNA Ethernet PHY is populated.
+                       KSZ8081RNA CMSIS-Driver Ethernet PHY is preselected.
+
+  - MCBSTM32F400 V1.1: ST802RT1 Ethernet PHY is populated.
+                       Change selection of CMSIS-Driver Ethernet PHY in
+                       the Run-Time Environment window to ST802RT1.

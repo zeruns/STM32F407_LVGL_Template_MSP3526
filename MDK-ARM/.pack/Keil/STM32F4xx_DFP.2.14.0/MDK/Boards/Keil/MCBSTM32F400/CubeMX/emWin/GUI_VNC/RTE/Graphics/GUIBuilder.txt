@@ -1,0 +1,17 @@
+The GUIBuilder Utility has been selected in the run-time environment of this project.
+
+For convenience it is recommended to add the GUIBuilder utility to the Tools menu of uVision:
+1. Open Tools->Customize Tools Menu.
+2. Add a new menu item called GUIBuilder.
+3. Set the following settings:
+    Command:         .\RTE\Graphics\GUIBuilder.exe
+    Initial Folder:  .\
+    Arguments:
+4. Tick the "Run independent" checkbox.
+
+This setup only needs to be done once and will be available globally for all projects.
+
+Now GUIBuilder can be called from Tools->GUIBuilder.
+Generated C source files will be stored in the project root folder.
+
+Note: You can customize the output folder in the .\RTE\Graphics\GUIBuilder.ini file.

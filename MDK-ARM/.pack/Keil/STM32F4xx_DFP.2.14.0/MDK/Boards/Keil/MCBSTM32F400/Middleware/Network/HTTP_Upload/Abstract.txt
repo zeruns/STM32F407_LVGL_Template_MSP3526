@@ -1,0 +1,43 @@
+This is a HTTP_Upload example running on Network Dual Stack.
+It shows you how to upload files to SD card from a Web browser.
+
+Detailed description is available on:
+http://www.keil.com/pack/doc/MW/Network/html/_h_t_t_p__upload__example.html
+
+Use this example to connect an evaluation board to a LAN with router.
+You may also connect an evaluation board to PC directly using a direct
+or crosslink network cable.
+To connect to the HTTP server you can use auto-assigned IPv6 address,
+IPv4 address assigned by the DHCP server or NBNS resolved local host name.
+
+To test this example, open your web browser and enter the
+address http://mcbstm32f400/ or http://<boards IP address>
+
+IPv4 and IPv6 addresses are printed on display of evaluation board.
+
+Default user    : admin
+Default password: <none>
+
+The HTTP_Upload program is a standalone application preconfigured for
+MCBSTM32F400 Evaluation Board.
+
+The HTTP_Upload example is available in different targets:
+ - Debug:
+   - Compiler:                  ARM Compiler optimization Level 1
+   - Compiler:Event Recorder:   Enabled
+   - CMSIS:RTOS2:Keil RTX5:     Source
+   - File System:CORE:          LFN Debug
+   - Network:CORE:              IPv4/IPv6 Debug
+ - Release:
+   - Compiler:                  ARM Compiler optimization Level 3
+   - Compiler:Event Recorder:   Disabled
+   - CMSIS:RTOS2:Keil RTX5:     Library
+   - File System:CORE:          LFN
+   - Network:CORE:              IPv4/IPv6 Release
+
+Note:
+  - MCBSTM32F400 V1.2: KSZ8081RNA Ethernet PHY is populated.
+                       KSZ8081RNA CMSIS-Driver Ethernet PHY is preselected.
+  - MCBSTM32F400 V1.1: ST802RT1 Ethernet PHY is populated.
+                       Change selection of CMSIS-Driver Ethernet PHY in
+                       the Run-Time Environment window to ST802RT1.

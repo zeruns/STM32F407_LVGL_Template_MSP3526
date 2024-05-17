@@ -1,0 +1,85 @@
+;------------------------------------------------------------------------------
+; Copyright © ARM Ltd and ARM Germany GmbH
+; Communication Device Class driver installation file
+;------------------------------------------------------------------------------
+
+;------------------------------------------------------------------------------
+; Header \ Description
+;------------------------------------------------------------------------------
+[Version]
+Signature   = "$Windows NT$"
+Class       = Ports
+ClassGuid   = {4D36E978-E325-11CE-BFC1-08002BE10318}
+Provider    = %Manufacturer%
+DriverVer   = 07/10/2019,1.0.0.0
+CatalogFile = mcbstm32f4xx-vcom.cat
+
+;------------------------------------------------------------------------------
+; Manufacturer/Models sections
+;------------------------------------------------------------------------------
+[Manufacturer]
+%Manufacturer%      = DeviceList, NTamd64, NTx86
+
+;------------------------------------------------------------------------------
+; Decoration for x86 architecture
+;------------------------------------------------------------------------------
+[DeviceList.NTx86]
+%DESCRIPTION%=MCBSTM32F400USB, USB\VID_c251&PID_3505
+%DESCRIPTION%=MCBSTM32F400USB, USB\VID_c251&PID_3515
+%COMPOSITE0% =MCBSTM32F400USB, USB\VID_c251&PID_3505&MI_00
+%COMPOSITE0% =MCBSTM32F400USB, USB\VID_c251&PID_3515&MI_00
+%COMPOSITE2% =MCBSTM32F400USB, USB\VID_c251&PID_3505&MI_02
+%COMPOSITE2% =MCBSTM32F400USB, USB\VID_c251&PID_3515&MI_02
+
+;------------------------------------------------------------------------------
+; Decoration for x64 architecture
+;------------------------------------------------------------------------------
+[DeviceList.NTamd64]
+%DESCRIPTION%=MCBSTM32F400USB, USB\VID_c251&PID_3505
+%DESCRIPTION%=MCBSTM32F400USB, USB\VID_c251&PID_3515
+%COMPOSITE0% =MCBSTM32F400USB, USB\VID_c251&PID_3505&MI_00
+%COMPOSITE0% =MCBSTM32F400USB, USB\VID_c251&PID_3515&MI_00
+%COMPOSITE2% =MCBSTM32F400USB, USB\VID_c251&PID_3505&MI_02
+%COMPOSITE2% =MCBSTM32F400USB, USB\VID_c251&PID_3515&MI_02
+
+;------------------------------------------------------------------------------
+; Installation
+;------------------------------------------------------------------------------
+[SourceDisksFiles]
+
+[SourceDisksNames]
+
+[DestinationDirs]
+FakeModemCopyFileSection=12
+DefaultDestDir=12
+[FakeModemCopyFileSection]
+
+[MCBSTM32F400USB]
+include=mdmcpq.inf
+CopyFiles=FakeModemCopyFileSection
+AddReg=MCBSTM32F400USB.AddReg
+
+[MCBSTM32F400USB.AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,usbser.sys
+HKR,,EnumPropPages32,,"MsPorts.dll,SerialPortPropPageProvider"
+
+[MCBSTM32F400USB.Services]
+AddService=usbser, 0x00000002, DriverService
+
+[DriverService]
+DisplayName=%DRIVER.SVC%
+ServiceType=1
+StartType=3
+ErrorControl=1
+ServiceBinary=%12%\usbser.sys
+
+;------------------------------------------------------------------------------
+; String Definitions
+;------------------------------------------------------------------------------
+[Strings]
+Manufacturer = "ARM Germany GmbH"
+DRIVER.SVC   = "MCBSTM32F400 USB VCOM Driver"
+DESCRIPTION  = "MCBSTM32F400 USB VCOM Port"
+COMPOSITE0   = "MCBSTM32F400 USB VCOM Port"
+COMPOSITE2   = "MCBSTM32F400 USB VCOM Port"

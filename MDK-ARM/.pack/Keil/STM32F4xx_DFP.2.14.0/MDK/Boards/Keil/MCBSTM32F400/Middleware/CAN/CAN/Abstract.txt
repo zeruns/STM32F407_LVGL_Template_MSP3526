@@ -1,0 +1,23 @@
+This is an CAN example that sends and receives 8 byte data messages.
+Loopback mode is selected by default so it does not need physical loopback
+for demonstration. It sends messages to itself internally and to the CAN bus
+so transmitted messages can be captured on the CAN bus also.
+
+Board:                  Keil  'MCBSTM32F400'
+Microcontroller:        ST       'STM32F407'
+Clock Settings:         XTAL       =  25 MHz
+                        CPUCLK     = 168 MHz
+                        APB1CLK    =  42 MHz (used for CAN controller)
+CAN1 Interface:         bit rate 125 kbit/s
+User Interface:         input:  none
+                        output: SWO + Graphic LCD
+
+The program is available in different targets:
+ - Debug:
+   - Compiler:                  ARM Compiler optimization Level 1
+   - Compiler:Event Recorder:   Enabled
+   - CMSIS:RTOS2:Keil RTX5:     Source
+ - Release:
+   - Compiler:                  ARM Compiler optimization Level 3
+   - Compiler:Event Recorder:   Disabled
+   - CMSIS:RTOS2:Keil RTX5:     Library

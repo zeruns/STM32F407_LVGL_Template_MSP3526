@@ -1,0 +1,77 @@
+This is an RNDIS (Remote Network Driver Interface Specification) example that 
+demonstrates Communication Device Class (CDC) Abstract Control Model (ACM) on 
+USB Device.
+
+It demonstrates a bridge between USB RNDIS network adapter and Ethernet port 
+on the evaluation board.
+
+Detailed description is available on:
+www.keil.com/pack/doc/MW/USB/html/dev_cdc_acm_rndis_bridge.html
+
+Board:                  Keil  'MCBSTM32F400'
+Microcontroller:        ST       'STM32F407'
+Clock Settings:         XTAL       =  25 MHz
+                        CPUCLK     = 168 MHz
+                        USB HS CLK =  60 MHz (from external ULPI PHY)
+Bridge functionality:   USBHS <->  <-> ETH
+
+The Windows PC will install a network adapter on automatically if device
+is enabled on high-speed port otherwise see Driver Installation below.
+After installation an additional network adapter "Keil USB Remote NDIS6 based Device"
+can be found under System/Hardware/Device Manager/Network adapters.
+
+Testing the USB RNDIS network adapter:
+
+  Connect USB Host PC with USB cable to USBHS connector on the embedded board.
+  Connect local network to ETH connector on the embedded board.
+  Disable any other network adapter except "Keil USB Remote NDIS6 based Device".
+  Try surfing the web.
+
+The program is available for target(s):
+- Debug:
+   - Compiler:                  ARM Compiler optimization Level 1
+   - Compiler:Event Recorder:   Enabled
+   - CMSIS:RTOS2:Keil RTX5:     Source
+   - USB:CORE:                  Debug
+- Release:
+   - Compiler:                  ARM Compiler optimization Level 3
+   - Compiler:Event Recorder:   Disabled
+   - CMSIS:RTOS2:Keil RTX5:     Library
+   - USB:CORE:                  Release
+
+Driver Files:
+-------------
+ - mcbstm32f400-rndis.inf : Driver setup information.
+ - mcbstm32f400-rndis.cat : Digitally signed driver catalog file for Host PC.
+
+Note : Digitally signing of the driver catalog file is required to install
+drivers on 64-bit PCs using Windows Vista or later Windows versions. Please
+refer to Microsoft documentation for further information.
+
+Driver Installation:
+--------------------
+     "Welcome to the Found New Hardware Wizard" appears
+     - select 'No, not this time'
+     - press  'Next'
+
+     - select 'Install from a list or specific location (Advanced)'
+     - press  'Next'
+
+     - select 'Search for the best driver in these locations'
+     - check  'include this location in the search'
+     - set to <project folder>
+     - press 'Next'
+
+     "Hardware Installation" appears
+     "has not passed Windows Logo testing..."
+     - press 'Continue Anyway'
+
+     "Completing the Found New Hardware Wizard" appears
+     - press 'Finish'
+
+Note:
+  - MCBSTM32F400 V1.2: KSZ8081RNA Ethernet PHY is populated.
+                       KSZ8081RNA CMSIS-Driver Ethernet PHY is preselected.
+  - MCBSTM32F400 V1.1: ST802RT1 Ethernet PHY is populated.
+                       Change selection of CMSIS-Driver Ethernet PHY in
+                       the Run-Time Environment window to ST802RT1.
