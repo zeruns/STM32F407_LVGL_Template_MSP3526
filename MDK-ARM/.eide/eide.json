@@ -35,6 +35,9 @@
                 "name": "Core",
                 "files": [
                   {
+                    "path": "../Core/Src/crc.c"
+                  },
+                  {
                     "path": "../Core/Src/gpio.c"
                   },
                   {
@@ -66,7 +69,14 @@
               },
               {
                 "name": "Hardware",
-                "files": [],
+                "files": [
+                  {
+                    "path": "../Core/Hardware/GUI.c"
+                  },
+                  {
+                    "path": "../Core/Hardware/LCD.c"
+                  }
+                ],
                 "folders": []
               }
             ]
@@ -91,6 +101,9 @@
             "files": [
               {
                 "path": "../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c"
+              },
+              {
+                "path": "../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_crc.c"
               },
               {
                 "path": "../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma_ex.c"

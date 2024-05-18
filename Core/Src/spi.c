@@ -47,8 +47,8 @@ void MX_SPI2_Init(void)
   hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
   hspi2.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi2.Init.TIMode = SPI_TIMODE_DISABLE;
-  hspi2.Init.CRCCalculation = SPI_CRCCALCULATION_ENABLE;
-  hspi2.Init.CRCPolynomial = 7;
+  hspi2.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+  hspi2.Init.CRCPolynomial = 10;
   if (HAL_SPI_Init(&hspi2) != HAL_OK)
   {
     Error_Handler();
@@ -125,5 +125,20 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef* spiHandle)
 }
 
 /* USER CODE BEGIN 1 */
-
+void SPI2_SetSpeed(uint8_t SpeedSet)
+{
+	
+	if(SpeedSet==1)
+	{
+		hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+	}
+	else
+	{
+		hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
+	}
+	if (HAL_SPI_Init(&hspi2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+} 
 /* USER CODE END 1 */

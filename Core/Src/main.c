@@ -1,23 +1,24 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file           : main.c
-  * @brief          : Main program body
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2024 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : main.c
+ * @brief          : Main program body
+ ******************************************************************************
+ * @attention
+ *
+ * Copyright (c) 2024 STMicroelectronics.
+ * All rights reserved.
+ *
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ *
+ ******************************************************************************
+ */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "crc.h"
 #include "i2c.h"
 #include "spi.h"
 #include "tim.h"
@@ -26,7 +27,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "LCD.h"
+#include "GUI.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -63,9 +65,9 @@ void SystemClock_Config(void);
 /* USER CODE END 0 */
 
 /**
-  * @brief  The application entry point.
-  * @retval int
-  */
+ * @brief  The application entry point.
+ * @retval int
+ */
 int main(void)
 {
 
@@ -95,21 +97,46 @@ int main(void)
   MX_USART1_UART_Init();
   MX_I2C1_Init();
   MX_TIM3_Init();
+  MX_CRC_Init();
   /* USER CODE BEGIN 2 */
-  HAL_TIM_Base_Start_IT(&htim3);            // 启动定时器3和定时器中断，1Hz
-
+  HAL_TIM_Base_Start_IT(&htim3); // 启动定时器3和定时器中断，1Hz
+  LCD_Init();                    // 初始化LCD
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  
+  LCD_Fill(0, 0, lcddev.width, 20, BLUE);
+  Gui_StrCenter(0, 60, RED, BLUE, "综合测试程序", 16, 1);
+  Gui_StrCenter(0, 90, BRED, BLUE, "3.5\" IPS ST7796 320X480", 16, 1);
+
   while (1)
   {
+    LCD_Fill(0, 0, lcddev.width, lcddev.height, WHITE);
+    Show_Str(20, 30, BLACK, YELLOW, "WHITE", 16, 1);
+    HAL_Delay(800);
+    LCD_Fill(0, 0, lcddev.width, lcddev.height, BLACK);
+    Show_Str(20, 30, WHITE, YELLOW, "BLACK", 16, 1);
+    HAL_Delay(800);
+    LCD_Fill(0, 0, lcddev.width, lcddev.height, RED);
+    Show_Str(20, 30, BLUE, YELLOW, "RED ", 16, 1);
+    HAL_Delay(800);
+    LCD_Fill(0, 0, lcddev.width, lcddev.height, GREEN);
+    Show_Str(20, 30, BLUE, YELLOW, "GREEN ", 16, 1);
+    HAL_Delay(800);
+    LCD_Fill(0, 0, lcddev.width, lcddev.height, BLUE);
+    Show_Str(20, 30, RED, YELLOW, "BLUE ", 16, 1);
+    HAL_Delay(800);
+    LCD_Fill(0, 0, lcddev.width, lcddev.height, GRAY);
+    Show_Str(20, 30, MAGENTA, YELLOW, "GRAY", 16, 1);
+    HAL_Delay(800);
+
     /* USER CODE END WHILE */
-    
+
     /* USER CODE BEGIN 3 */
     if (ms_cnt_1 >= 500) // 判断是否计时到500ms
     {
-      ms_cnt_1 = 0;                                   // 计时清零
+      ms_cnt_1 = 0;                                 // 计时清零
       HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin); // LED2电平翻转
     }
   }
@@ -117,22 +144,22 @@ int main(void)
 }
 
 /**
-  * @brief System Clock Configuration
-  * @retval None
-  */
+ * @brief System Clock Configuration
+ * @retval None
+ */
 void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
   /** Configure the main internal regulator output voltage
-  */
+   */
   __HAL_RCC_PWR_CLK_ENABLE();
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
   /** Initializes the RCC Oscillators according to the specified parameters
-  * in the RCC_OscInitTypeDef structure.
-  */
+   * in the RCC_OscInitTypeDef structure.
+   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
@@ -147,9 +174,8 @@ void SystemClock_Config(void)
   }
 
   /** Initializes the CPU, AHB and APB buses clocks
-  */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+   */
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
@@ -161,7 +187,7 @@ void SystemClock_Config(void)
   }
 
   /** Enables the Clock Security System
-  */
+   */
   HAL_RCC_EnableCSS();
 }
 
@@ -176,9 +202,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 /* USER CODE END 4 */
 
 /**
-  * @brief  This function is executed in case of error occurrence.
-  * @retval None
-  */
+ * @brief  This function is executed in case of error occurrence.
+ * @retval None
+ */
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
@@ -190,14 +216,14 @@ void Error_Handler(void)
   /* USER CODE END Error_Handler_Debug */
 }
 
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
 /**
-  * @brief  Reports the name of the source file and the source line number
-  *         where the assert_param error has occurred.
-  * @param  file: pointer to the source file name
-  * @param  line: assert_param error line source number
-  * @retval None
-  */
+ * @brief  Reports the name of the source file and the source line number
+ *         where the assert_param error has occurred.
+ * @param  file: pointer to the source file name
+ * @param  line: assert_param error line source number
+ * @retval None
+ */
 void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
