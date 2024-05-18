@@ -161,6 +161,21 @@ uint16_t LCD_ReadPoint(uint16_t x, uint16_t y)
 	return color;
 }
 
+/*******************************************************************
+ * @name       :void GUI_DrawPoint(uint16_t x,uint16_t y,uint16_t color)
+ * @date       :2018-08-09
+ * @function   :draw a point in LCD screen
+ * @parameters :x:the x coordinate of the point
+				y:the y coordinate of the point
+								color:the color value of the point
+ * @retvalue   :None
+********************************************************************/
+void DrawPoint(uint16_t x, uint16_t y, uint16_t color)
+{
+	LCD_SetCursor(x, y); // 设置光标位置
+	Lcd_WriteData_16Bit(color);
+}
+
 /*****************************************************************************
  * @name       :void LCD_Clear(uint16_t Color)
  * @date       :2018-08-09
@@ -428,19 +443,4 @@ uint16_t LCD_Read_ID(void)
 	lcddev.id <<= 8;
 	lcddev.id |= val[2];
 	return lcddev.id;
-}
-
-/*******************************************************************
- * @name       :void GUI_DrawPoint(uint16_t x,uint16_t y,uint16_t color)
- * @date       :2018-08-09
- * @function   :draw a point in LCD screen
- * @parameters :x:the x coordinate of the point
-				y:the y coordinate of the point
-								color:the color value of the point
- * @retvalue   :None
-********************************************************************/
-void LCD_DrawPoint(uint16_t x, uint16_t y, uint16_t color)
-{
-	LCD_SetCursor(x, y); // 设置光标位置
-	Lcd_WriteData_16Bit(color);
 }

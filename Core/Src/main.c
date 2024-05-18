@@ -28,6 +28,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "LCD.h"
+#include "lvgl.h"
+#include "lv_port_disp.h"
 #include "GUI.h"
 /* USER CODE END Includes */
 
@@ -100,37 +102,25 @@ int main(void)
   MX_CRC_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim3); // 启动定时器3和定时器中断，1Hz
-  LCD_Init();                    // 初始化LCD
+  lv_init();
+	lv_port_disp_init();
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   
-  LCD_Fill(0, 0, lcddev.width, 20, BLUE);
-  Gui_StrCenter(0, 60, RED, BLUE, "综合测试程序", 16, 1);
-  Gui_StrCenter(0, 90, BRED, BLUE, "3.5\" IPS ST7796 320X480", 16, 1);
+  lv_obj_t* btn = lv_btn_create(lv_scr_act()); 
+lv_obj_set_pos(btn, 10, 10);
+lv_obj_set_size(btn, 120, 50);
+lv_obj_t* label = lv_label_create(btn);
+lv_label_set_text(label, "Button");
+lv_obj_center(label);
+
 
   while (1)
   {
-    LCD_Fill(0, 0, lcddev.width, lcddev.height, WHITE);
-    Show_Str(20, 30, BLACK, YELLOW, "WHITE", 16, 1);
-    HAL_Delay(800);
-    LCD_Fill(0, 0, lcddev.width, lcddev.height, BLACK);
-    Show_Str(20, 30, WHITE, YELLOW, "BLACK", 16, 1);
-    HAL_Delay(800);
-    LCD_Fill(0, 0, lcddev.width, lcddev.height, RED);
-    Show_Str(20, 30, BLUE, YELLOW, "RED ", 16, 1);
-    HAL_Delay(800);
-    LCD_Fill(0, 0, lcddev.width, lcddev.height, GREEN);
-    Show_Str(20, 30, BLUE, YELLOW, "GREEN ", 16, 1);
-    HAL_Delay(800);
-    LCD_Fill(0, 0, lcddev.width, lcddev.height, BLUE);
-    Show_Str(20, 30, RED, YELLOW, "BLUE ", 16, 1);
-    HAL_Delay(800);
-    LCD_Fill(0, 0, lcddev.width, lcddev.height, GRAY);
-    Show_Str(20, 30, MAGENTA, YELLOW, "GRAY", 16, 1);
-    HAL_Delay(800);
-
+    
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -139,6 +129,7 @@ int main(void)
       ms_cnt_1 = 0;                                 // 计时清零
       HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin); // LED2电平翻转
     }
+	lv_task_handler();
   }
   /* USER CODE END 3 */
 }
@@ -197,6 +188,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   if (htim->Instance == TIM3) // 定时器TIM3，中断时间1ms
   {
     ms_cnt_1++;
+	  lv_tick_inc(1);
   }
 }
 /* USER CODE END 4 */

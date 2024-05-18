@@ -118,4 +118,6 @@ void Lcd_WriteData_16Bit(uint16_t Data);
 void LCD_direction(uint8_t direction);
 uint16_t LCD_Read_ID(void);
 
+void DrawPoint(uint16_t x, uint16_t y, uint16_t color);
+
 #endif
