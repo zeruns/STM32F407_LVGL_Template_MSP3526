@@ -6,9 +6,11 @@
 #ifndef LV_DEMOS_H
 #define LV_DEMOS_H
 
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 /*********************
  *      INCLUDES

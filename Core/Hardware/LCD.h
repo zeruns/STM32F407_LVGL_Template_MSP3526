@@ -41,22 +41,20 @@ extern uint16_t BACK_COLOR;	 // 背景颜色.默认为白色
 
 // QDtech全系列模块采用了三极管控制背光亮灭，用户也可以接PWM调节背光亮度
 #define LCD_LED PBout(LED) // LCD背光
-#define GPIO_TYPE GPIOB
-#define LCD_CS 15
-#define LCD_RS 14
-#define LCD_RST 12
+
 // 如果使用官方库函数定义下列底层，速度将会下降到14帧每秒，建议采用我司推荐方法
 // 以下IO定义直接操作寄存器，快速IO操作，刷屏速率可以达到28帧每秒！
+
+#define LCD_CS_SET LCD_CS_GPIO_Port->BSRR = LCD_CS_Pin // 片选端口  PE6
+#define LCD_RS_SET LCD_RS_GPIO_Port->BSRR = LCD_RS_Pin // 数据/命令 PC0
+#define LCD_RST_SET LCD_RST_GPIO_Port->BSRR = LCD_RST_Pin // 复位 PC1
+
+#define LCD_CS_CLR LCD_CS_GPIO_Port->BSRR = (uint32_t)LCD_CS_Pin << 16U // 片选端口  PE6
+#define LCD_RS_CLR LCD_RS_GPIO_Port->BSRR = (uint32_t)LCD_RS_Pin << 16U // 数据/命令 PC0
+#define LCD_RST_CLR LCD_RST_GPIO_Port->BSRR = (uint32_t)LCD_RST_Pin << 16U // 复位 PC1
+
+
 /*
-#define LCD_CS_SET GPIO_TYPE->BSRRL = 1 << LCD_CS	// 片选端口  	PB11
-#define LCD_RS_SET GPIO_TYPE->BSRRL = 1 << LCD_RS	// 数据/命令  PB10
-#define LCD_RST_SET GPIO_TYPE->BSRRL = 1 << LCD_RST // 复位			PB12
-
-#define LCD_CS_CLR GPIO_TYPE->BSRRH = 1 << LCD_CS	// 片选端口  	PB11
-#define LCD_RS_CLR GPIO_TYPE->BSRRH = 1 << LCD_RS	// 数据/命令  PB10
-#define LCD_RST_CLR GPIO_TYPE->BSRRH = 1 << LCD_RST // 复位			  PB12
-*/
-
 #define LCD_CS_SET HAL_GPIO_WritePin(LCD_CS_GPIO_Port, LCD_CS_Pin, GPIO_PIN_SET)	// 片选端口
 #define LCD_RS_SET HAL_GPIO_WritePin(LCD_RS_GPIO_Port, LCD_RS_Pin, GPIO_PIN_SET)	// 数据/命令
 #define LCD_RST_SET HAL_GPIO_WritePin(LCD_RST_GPIO_Port, LCD_RST_Pin, GPIO_PIN_SET) // 复位
@@ -64,6 +62,7 @@ extern uint16_t BACK_COLOR;	 // 背景颜色.默认为白色
 #define LCD_CS_CLR HAL_GPIO_WritePin(LCD_CS_GPIO_Port, LCD_CS_Pin, GPIO_PIN_RESET)	  // 片选端口
 #define LCD_RS_CLR HAL_GPIO_WritePin(LCD_RS_GPIO_Port, LCD_RS_Pin, GPIO_PIN_RESET)	  // 数据/命令
 #define LCD_RST_CLR HAL_GPIO_WritePin(LCD_RST_GPIO_Port, LCD_RST_Pin, GPIO_PIN_RESET) // 复位
+*/
 
 // 画笔颜色
 #define WHITE 0xFFFF
@@ -118,6 +117,7 @@ void Lcd_WriteData_16Bit(uint16_t Data);
 void LCD_direction(uint8_t direction);
 uint16_t LCD_Read_ID(void);
 
-void DrawPoint(uint16_t x, uint16_t y, uint16_t color);
+void LCDDrawPoint(uint16_t x, uint16_t y, uint16_t color);
+void LCD_Fill(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, uint16_t color);
 
 #endif

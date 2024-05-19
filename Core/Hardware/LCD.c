@@ -1,4 +1,5 @@
 #include "LCD.h"
+#include "usart.h"
 
 // 管理LCD重要参数
 // 默认为竖屏
@@ -21,19 +22,36 @@ uint8_t SPI_SwapByte(uint8_t ByteSend)
 	return rxData;
 }
 
+/**
+ * @brief 通过SPI接口发送一个16位数据。
+ * 将16位数据分割成两个8位数据，然后通过SPI接口发送。
+ * @param Data: 要发送的16位数据
+ * @return 没有返回值
+ */
+void SPI_Send2Byte(uint16_t Data)
+{
+	uint8_t data[2];
+	data[0] = Data >> 8;
+	data[1] = (uint8_t)Data;
+	HAL_SPI_Transmit(&hspi2, data, 2, HAL_MAX_DELAY);
+	// 等待DMA传输完成
+    //while(HAL_SPI_GetState(&hspi2) != HAL_SPI_STATE_READY);
+	// 配置SPI传输参数
+    //HAL_SPI_Transmit_DMA(&hspi2, data, 2);
+}
 
-/*****************************************************************************
- * @name       :void LCD_WR_REG(uint8_t data)
- * @date       :2018-08-09
- * @function   :Write an 8-bit command to the LCD screen
- * @parameters :data:Command value to be written
- * @retvalue   :None
- ******************************************************************************/
+/**
+ * @brief 向LCD屏幕写入一个8位命令。
+ * 向LCD屏幕发送一个8位的命令值。
+ * @param data: 要写入的命令值
+ * @return 没有返回值
+ */
 void LCD_WR_REG(uint8_t data)
 {
 	LCD_CS_CLR;
 	LCD_RS_CLR;
-	HAL_SPI_Transmit(&hspi2, &data, 1, HAL_MAX_DELAY); // SPI发送一个字节数据
+	SPI_SwapByte(data);
+	//HAL_SPI_Transmit(&hspi2, &data, 1, HAL_MAX_DELAY); // SPI发送一个字节数据
 	LCD_CS_SET;
 }
 
@@ -48,7 +66,7 @@ void LCD_WR_DATA(uint8_t data)
 {
 	LCD_CS_CLR;
 	LCD_RS_SET;
-	HAL_SPI_Transmit(&hspi2, &data, 1, HAL_MAX_DELAY);
+	SPI_SwapByte(data);
 	LCD_CS_SET;
 }
 
@@ -57,9 +75,9 @@ uint8_t LCD_RD_DATA(void)
 	uint8_t data;
 	LCD_CS_CLR;
 	LCD_RS_SET;
-	SPI2_SetSpeed(0);
+	//SPI2_SetSpeed(0);
 	data = SPI_SwapByte(0xFF);
-	SPI2_SetSpeed(1);
+	//SPI2_SetSpeed(1);
 	LCD_CS_SET;
 	return data;
 }
@@ -110,14 +128,11 @@ void LCD_ReadRAM_Prepare(void)
  ******************************************************************************/
 void Lcd_WriteData_16Bit(uint16_t Data)
 {
-	uint8_t data[2];
 	LCD_CS_CLR;
 	LCD_RS_SET;
-	data[0] = Data >> 8;
-	data[1] = (uint8_t)Data;
-	HAL_SPI_Transmit(&hspi2, data, 2, HAL_MAX_DELAY);
-	/*SPI_SwapByte(Data >> 8);
-	SPI_SwapByte(Data);*/
+	SPI_Send2Byte(Data);
+//	SPI_SwapByte(Data >> 8);
+//	SPI_SwapByte(Data);
 	LCD_CS_SET;
 }
 
@@ -127,12 +142,12 @@ uint16_t Lcd_ReadData_16Bit(void)
 	LCD_CS_CLR;
 	LCD_RS_CLR;
 	SPI_SwapByte(lcddev.rramcmd);
-	SPI2_SetSpeed(0);
+	//SPI2_SetSpeed(0);
 	LCD_RS_SET;
 	SPI_SwapByte(0xFF);
 	r = SPI_SwapByte(0xFF);
 	g = SPI_SwapByte(0xFF);
-	SPI2_SetSpeed(1);
+	//SPI2_SetSpeed(1);
 	LCD_CS_SET;
 	r <<= 8;
 	r |= g;
@@ -170,10 +185,35 @@ uint16_t LCD_ReadPoint(uint16_t x, uint16_t y)
 								color:the color value of the point
  * @retvalue   :None
 ********************************************************************/
-void DrawPoint(uint16_t x, uint16_t y, uint16_t color)
+void LCDDrawPoint(uint16_t x, uint16_t y, uint16_t color)
 {
 	LCD_SetCursor(x, y); // 设置光标位置
 	Lcd_WriteData_16Bit(color);
+}
+
+/*******************************************************************
+ * @name       :void LCD_Fill(uint16_t sx,uint16_t sy,uint16_t ex,uint16_t ey,uint16_t color)
+ * @date       :2018-08-09
+ * @function   :fill the specified area
+ * @parameters :sx:the bebinning x coordinate of the specified area
+				sy:the bebinning y coordinate of the specified area
+								ex:the ending x coordinate of the specified area
+								ey:the ending y coordinate of the specified area
+								color:the filled color value
+ * @retvalue   :None
+********************************************************************/
+void LCD_Fill(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, uint16_t color)
+{
+	uint16_t i, j;
+	uint16_t width = ex - sx + 1;	// 得到填充的宽度
+	uint16_t height = ey - sy + 1;	// 高度
+	LCD_SetWindows(sx, sy, ex, ey); // 设置显示窗口
+	for (i = 0; i < height; i++)
+	{
+		for (j = 0; j < width; j++)
+			Lcd_WriteData_16Bit(color); // 写入数据
+	}
+	LCD_SetWindows(0, 0, lcddev.width - 1, lcddev.height - 1); // 恢复窗口设置为全屏
 }
 
 /*****************************************************************************
@@ -210,9 +250,9 @@ void LCD_Clear(uint16_t Color)
 void LCD_RESET(void)
 {
 	LCD_RST_CLR;
-	HAL_Delay(150);
+	HAL_Delay(80);
 	LCD_RST_SET;
-	HAL_Delay(100);
+	HAL_Delay(30);
 }
 
 /*****************************************************************************
@@ -229,7 +269,7 @@ void LCD_Init(void)
 	//*************3.5 ST7796S IPS初始化**********//
 	LCD_WR_REG(0x11);
 
-	HAL_Delay(120); // Delay 120ms
+	HAL_Delay(80); // Delay 120ms
 
 	LCD_WR_REG(0x36); // Memory Data Access Control MY,MX~~
 	LCD_WR_DATA(0x48);
@@ -314,7 +354,7 @@ void LCD_Init(void)
 	LCD_WR_REG(0xF0);
 	LCD_WR_DATA(0x69);
 
-	HAL_Delay(120);
+	HAL_Delay(80);
 
 	LCD_WR_REG(0x21);
 
