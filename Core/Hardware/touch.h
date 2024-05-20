@@ -21,7 +21,7 @@ typedef struct
 	uint16_t x[CTP_MAX_TOUCH]; // 当前坐标
 	uint16_t y[CTP_MAX_TOUCH]; // 电容屏有最多5组坐标,电阻屏则用x[0],y[0]代表:此次扫描时,触屏的坐标,用
 							   // x[4],y[4]存储第一次按下时的坐标.
-	uint8_t sta; // 笔的状态
+	uint8_t sta; // 触摸的状态
 				 // b7:按下1/松开0;
 				 // b6:0,没有按键按下;1,有按键按下.
 				 // b5:保留

@@ -39,6 +39,5 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	if (GPIO_Pin == CTP_INT_Pin)
 	{
 		tp_dev.scan();
-		USART1_Printf("x:%d,y:%d\r\n", tp_dev.x, tp_dev.y);
 	}
 }

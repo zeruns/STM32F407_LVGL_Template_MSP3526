@@ -31,6 +31,7 @@
 #include "LCD.h"
 #include "lvgl.h"
 #include "lv_port_disp.h"
+#include "lv_port_indev.h"
 #include "lv_demos.h"
 #include "touch.h"
 #include "FT6336.h"
@@ -56,6 +57,7 @@
 /* USER CODE BEGIN PV */
 // 毫秒计时变量
 volatile uint16_t ms_cnt_1 = 0; // 计时变量1
+volatile uint16_t ms_cnt_2 = 0; // 计时变量2
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -106,18 +108,17 @@ int main(void)
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim3); // 启动定时器3和定时器中断，1Hz
-  lv_init();
-  lv_port_disp_init();
-  TP_Init(); // 初始化触摸屏
-
+  lv_init();                     // LVGL初始化
+  lv_port_disp_init();           // LVGL显示初始化
+  lv_port_indev_init();          // LVGL输入设备初始化
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-  // lv_demo_widgets();
+  lv_demo_widgets();
   // lv_demo_stress();
-  lv_demo_benchmark();
+  // lv_demo_benchmark();
 
   while (1)
   {
@@ -125,12 +126,16 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    if (ms_cnt_2)
+    {
+      ms_cnt_2 = 0;      // 计时清零
+      lv_task_handler(); // LVGL任务处理
+    }
     if (ms_cnt_1 >= 500) // 判断是否计时到500ms
     {
       ms_cnt_1 = 0;                                 // 计时清零
       HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin); // LED2电平翻转
     }
-    lv_task_handler();
   }
   /* USER CODE END 3 */
 }
@@ -171,7 +176,7 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK)
   {
@@ -189,7 +194,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   if (htim->Instance == TIM3) // 定时器TIM3，中断时间1ms
   {
     ms_cnt_1++;
-    lv_tick_inc(1);
+    ms_cnt_2++;
+    lv_tick_inc(1); // LVGL时基
   }
 }
 /* USER CODE END 4 */

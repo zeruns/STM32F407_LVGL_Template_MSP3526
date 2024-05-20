@@ -35,7 +35,7 @@ uint8_t SPI_SwapByte(uint8_t ByteSend)
 {
 	uint8_t rxData = 0;														// 用于接收数据的变量
 	HAL_SPI_TransmitReceive(LCD_SPI, &ByteSend, &rxData, 1, HAL_MAX_DELAY); // SPI发送数据并接收数据
-	return rxData;
+	return rxData;															// 返回接收到的数据
 }
 
 /**
@@ -46,10 +46,10 @@ uint8_t SPI_SwapByte(uint8_t ByteSend)
  */
 void SPI_Send2Byte(uint16_t Data)
 {
-	uint8_t data[2];
-	data[0] = Data >> 8;
-	data[1] = (uint8_t)Data;
-	HAL_SPI_Transmit(LCD_SPI, data, 2, HAL_MAX_DELAY);
+	uint8_t data[2];								   // 用于发送数据的数组
+	data[0] = Data >> 8;							   // 高8位数据
+	data[1] = (uint8_t)Data;						   // 低8位数据
+	HAL_SPI_Transmit(LCD_SPI, data, 2, HAL_MAX_DELAY); // 发送数据
 }
 
 /**
@@ -61,135 +61,159 @@ void SPI_Send2Byte(uint16_t Data)
 void LCD_WR_REG(uint8_t data)
 {
 	while (HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY)
-		;
-	LCD_CS_CLR;
-	LCD_RS_CLR;
-	SPI_SwapByte(data);
-	LCD_CS_SET;
+		;				// 等待SPI总线空闲
+	LCD_CS_CLR;			// 选中LCD
+	LCD_RS_CLR;			// 设置为命令模式
+	SPI_SwapByte(data); // 发送命令字节
+	LCD_CS_SET;			// 取消选中LCD
 }
 
-/*****************************************************************************
- * @name       :void LCD_WR_DATA(uint8_t data)
- * @date       :2018-08-09
- * @function   :Write an 8-bit data to the LCD screen
- * @parameters :data:data value to be written
- * @retvalue   :None
- ******************************************************************************/
+/**
+ * @brief 向LCD写入数据
+ * 通过SPI接口向LCD写入一个字节的数据。
+ * @param data 要写入的数据
+ */
 void LCD_WR_DATA(uint8_t data)
 {
 	while (HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY)
-		;
-	LCD_CS_CLR;
-	LCD_RS_SET;
-	SPI_SwapByte(data);
-	LCD_CS_SET;
+		;				// 等待SPI总线空闲
+	LCD_CS_CLR;			// 选中LCD
+	LCD_RS_SET;			// 设置为数据模式
+	SPI_SwapByte(data); // 发送数据
+	LCD_CS_SET;			// 取消选中LCD
 }
 
+/**
+ * @brief 读取LCD数据
+ * 从LCD中读取一个字节的数据，并通过SPI接口返回。
+ * @return 读取到的LCD数据
+ */
 uint8_t LCD_RD_DATA(void)
 {
 	uint8_t data;
 	while (HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY)
-		;
-	LCD_CS_CLR;
-	LCD_RS_SET;
-	SPI1_SetSpeed(0);
-	data = SPI_SwapByte(0xFF);
-	SPI1_SetSpeed(1);
-	LCD_CS_SET;
-	return data;
+		;					   // 等待SPI总线空闲
+	LCD_CS_CLR;				   // 选中LCD
+	LCD_RS_SET;				   // 设置为数据模式
+	SPI1_SetSpeed(0);		   // 设置SPI速度为低速
+	data = SPI_SwapByte(0xFF); // 发送命令字节，并接收返回数据
+	SPI1_SetSpeed(1);		   // 设置SPI速度为高速
+	LCD_CS_SET;				   // 取消选中LCD
+	return data;			   // 返回读取到的数据
 }
 
-/*****************************************************************************
- * @name       :void LCD_WriteReg(uint8_t LCD_Reg, uint16_t LCD_RegValue)
- * @date       :2018-08-09
- * @function   :Write data into registers
- * @parameters :LCD_Reg:Register address
-				LCD_RegValue:Data to be written
- * @retvalue   :None
-******************************************************************************/
+/**
+ * @brief 向LCD寄存器写入数据
+ * 向指定的LCD寄存器写入给定的数据值。
+ * @param LCD_Reg LCD寄存器地址
+ * @param LCD_RegValue 要写入的数据值
+ */
 void LCD_WriteReg(uint8_t LCD_Reg, uint16_t LCD_RegValue)
 {
 	LCD_WR_REG(LCD_Reg);
 	LCD_WR_DATA(LCD_RegValue);
 }
 
+/**
+ * @brief 读取 LCD 寄存器值
+ * 通过给定的 LCD 寄存器地址，读取对应的寄存器值并返回。
+ * @param LCD_Reg LCD 寄存器地址
+ * @return 读取到的 LCD 寄存器值
+ */
 uint8_t LCD_ReadReg(uint8_t LCD_Reg)
 {
 	LCD_WR_REG(LCD_Reg);
 	return LCD_RD_DATA();
 }
 
-/*****************************************************************************
- * @name       :void LCD_WriteRAM_Prepare(void)
- * @date       :2018-08-09
- * @function   :Write GRAM
- * @parameters :None
- * @retvalue   :None
- ******************************************************************************/
+/**
+ * @brief 准备向LCD的GRAM写入数据
+ * 该函数用于准备向LCD的GRAM写入数据。通过发送写GRAM命令到LCD，为后续的写入操作做准备。
+ */
 void LCD_WriteRAM_Prepare(void)
 {
-	LCD_WR_REG(lcddev.wramcmd);
+	LCD_WR_REG(lcddev.wramcmd); // 发送写GRAM命令
 }
 
+/**
+ * @brief 准备读取LCD的GRAM
+ * 此函数用于准备读取LCD GRAM。
+ * 在调用此函数后，可以通过其他函数来读取 LCD GRAM 中的数据。
+ */
 void LCD_ReadRAM_Prepare(void)
 {
-	LCD_WR_REG(lcddev.rramcmd);
+	LCD_WR_REG(lcddev.rramcmd); // 发送读GRAM命令
 }
 
-/*****************************************************************************
- * @name       :void Lcd_WriteData_16Bit(uint16_t Data)
- * @date       :2018-08-09
- * @function   :Write an 16-bit command to the LCD screen
- * @parameters :Data:Data to be written
- * @retvalue   :None
- ******************************************************************************/
+/**
+ * @brief 向LCD写入16位的数据
+ * 使用SPI接口向LCD写入16位的数据。
+ * @param Data 要写入的数据
+ */
 void Lcd_WriteData_16Bit(uint16_t Data)
 {
 	while (HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY)
-		;
-	LCD_CS_CLR;
-	LCD_RS_SET;
-	SPI_Send2Byte(Data);
-	LCD_CS_SET;
+		;				 // 等待SPI总线空闲
+	LCD_CS_CLR;			 // 选中LCD
+	LCD_RS_SET;			 // 设置为数据模式
+	SPI_Send2Byte(Data); // 发送数据
+	LCD_CS_SET;			 // 取消选中LCD
 }
 
+/**
+ * @brief  向LCD写入多个字节数据。
+ * @param  Data: 指向要写入LCD的数据的指针。
+ * @param  Size: 要写入的数据大小，以字节为单位。
+ * @retval 无
+ */
 void Lcd_WriteData(uint8_t *Data, uint32_t Size)
 {
 	while (HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY)
-		;
-	LCD_CS_CLR;
-	LCD_RS_SET;
-	HAL_SPI_Transmit(LCD_SPI, Data, Size, HAL_MAX_DELAY);
-	LCD_CS_SET;
+		;												  // 等待SPI总线空闲
+	LCD_CS_CLR;											  // LCD片选引脚置低电平，选中LCD
+	LCD_RS_SET;											  // LCD数据/命令引脚置高电平，设置为数据模式
+	HAL_SPI_Transmit(LCD_SPI, Data, Size, HAL_MAX_DELAY); // 发送数据
+	LCD_CS_SET;											  // LCD片选引脚置高电平，取消选中LCD
 }
 
+/**
+ * @brief 使用DMA方式向LCD写入多个字节的数据
+ * 使用DMA（直接内存访问）方式将指定的数据写入LCD屏幕。
+ * @param Data 指向待写入数据的指针
+ * @param Size 待写入数据的长度
+ */
 CCMRAM void Lcd_WriteData_DMA(uint8_t *Data, uint32_t Size)
 {
 	while (HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY)
-		;
-	LCD_CS_CLR;
-	LCD_RS_SET;
-	HAL_SPI_Transmit_DMA(LCD_SPI, Data, Size);
+		;									   // 等待SPI总线空闲
+	LCD_CS_CLR;								   // LCD片选引脚置低电平，选中LCD
+	LCD_RS_SET;								   // LCD数据/命令引脚置高电平，设置为数据模式
+	HAL_SPI_Transmit_DMA(LCD_SPI, Data, Size); // 发送数据
 }
 
+/**
+ * @brief 从LCD读取16位的数据
+ * 从LCD中读取16位数据并返回。
+ * @return 读取到的16位数据
+ */
 uint16_t Lcd_ReadData_16Bit(void)
 {
-	uint16_t r, g;
+	uint16_t r, g;	
 	while (HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY)
-		;
-	LCD_CS_CLR;
-	LCD_RS_CLR;
-	SPI_SwapByte(lcddev.rramcmd);
-	SPI1_SetSpeed(0);
-	LCD_RS_SET;
-	SPI_SwapByte(0xFF);
-	r = SPI_SwapByte(0xFF);
-	g = SPI_SwapByte(0xFF);
-	SPI1_SetSpeed(1);
-	LCD_CS_SET;
-	r <<= 8;
-	r |= g;
-	return r;
+		;						  // 等待SPI总线空闲
+	LCD_CS_CLR;					  // LCD片选引脚置低电平，选中LCD
+	LCD_RS_CLR;					  // LCD数据/命令引脚置低电平，设置为命令模式
+	SPI_SwapByte(lcddev.rramcmd); // 发送读GRAM命令
+	SPI1_SetSpeed(0);			  // 设置SPI速度为低速
+	LCD_RS_SET;					  // LCD数据/命令引脚置高电平，设置为数据模式
+	SPI_SwapByte(0xFF);			  // 发送数据
+	r = SPI_SwapByte(0xFF);		  // 接收高8位数据
+	g = SPI_SwapByte(0xFF);		  // 接收低8位数据
+	SPI1_SetSpeed(1);			  // 设置SPI速度为高速
+	LCD_CS_SET;					  // LCD片选引脚置高电平，取消选中LCD
+	r <<= 8;					  // 合并高8位数据
+	r |= g;						  // 合并低8位数据
+	return r;					  // 返回数据
 }
 
 /*****************************************************************************

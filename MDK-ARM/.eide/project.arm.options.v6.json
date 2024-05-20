@@ -9,9 +9,9 @@
         "optimization": "level-balanced",
         "language-c": "c99",
         "language-cpp": "c++11",
+        "one-elf-section-per-function": true,
         "short-enums#wchar": true,
-        "warnings": "ac5-like-warnings",
-        "one-elf-section-per-function": true
+        "warnings": "ac5-like-warnings"
     },
     "asm-compiler": {
         "$use": "asm-auto"

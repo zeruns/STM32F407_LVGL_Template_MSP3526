@@ -125,7 +125,7 @@ uint8_t FT6336_Scan(void)
 	uint8_t mode;
 	static uint8_t t = 0; // 控制查询间隔,从而降低CPU占用率
 	t++;
-	if ((t % 10) == 0 || t < 10) // 空闲时,每进入10次CTP_Scan函数才检测1次,从而节省CPU使用率
+	if ((t % 10) == 0 || t < 10) // 每进入10次CTP_Scan函数才检测1次,从而节省CPU使用率
 	{
 		FT6336_RD_Reg(FT_REG_NUM_FINGER, &mode, 1); // 读取触摸点的状态
 		if (mode && (mode < 3))
@@ -157,7 +157,7 @@ uint8_t FT6336_Scan(void)
 						break;
 					}
 					// if((buf[0]&0XF0)!=0X80)tp_dev.x[i]=tp_dev.y[i]=0;//必须是contact事件，才认为有效
-					// printf("x[%d]:%d,y[%d]:%d\r\n",i,tp_dev.x[i],i,tp_dev.y[i]);
+					// USART1_Printf("x[%d]:%d,y[%d]:%d\r\n",i,tp_dev.x[i],i,tp_dev.y[i]);
 				}
 			}
 			res = 1;
