@@ -36,7 +36,7 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-
+#define CCMRAM __attribute__((section("ccmram")))
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/

@@ -158,7 +158,7 @@ void Lcd_WriteData(uint8_t *Data,uint32_t Size)
 	LCD_CS_SET;
 }
 
-void Lcd_WriteData_DMA(uint8_t *Data,uint32_t Size)
+CCMRAM void Lcd_WriteData_DMA(uint8_t *Data,uint32_t Size)
 {
 	while(HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY);
 	LCD_CS_CLR;
@@ -247,7 +247,7 @@ void LCD_Fill(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, uint16_t color
 	LCD_SetWindows(0, 0, lcddev.width - 1, lcddev.height - 1); // 恢复窗口设置为全屏
 }
 
-void LCD_Fill_LVGL(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, lv_color_t * color_p)
+CCMRAM void LCD_Fill_LVGL(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, lv_color_t * color_p)
 {
 	uint32_t i, j;
 	uint16_t width = ex - sx + 1;	// 得到填充的宽度
