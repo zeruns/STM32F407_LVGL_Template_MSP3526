@@ -3,7 +3,7 @@
 <title>Static Call Graph - [project\project.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image project\project.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6210000: Last Updated: Mon May 20 21:30:14 2024
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6210000: Last Updated: Mon May 20 21:50:53 2024
 <BR><P>
 <H3>Maximum Stack Usage =       1064 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -1718,7 +1718,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[1de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Lcd_WriteData_DMA
 </UL>
 
-<P><STRONG><a name="[1ef]"></a>HAL_SPI_TxCpltCallback</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, lcd.o(.text.HAL_SPI_TxCpltCallback))
+<P><STRONG><a name="[1ef]"></a>HAL_SPI_TxCpltCallback</STRONG> (Thumb, 30 bytes, Stack size 0 bytes, lcd.o(.text.HAL_SPI_TxCpltCallback))
 <BR><BR>[Called By]<UL><LI><a href="#[9b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPI_DMATransmitCplt
 </UL>
 
@@ -2051,7 +2051,7 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f407xx.o(RESET)
 </UL>
-<P><STRONG><a name="[1f2]"></a>SystemClock_Config</STRONG> (Thumb, 166 bytes, Stack size 88 bytes, main.o(.text.SystemClock_Config))
+<P><STRONG><a name="[1f2]"></a>SystemClock_Config</STRONG> (Thumb, 162 bytes, Stack size 88 bytes, main.o(.text.SystemClock_Config))
 <BR><BR>[Stack]<UL><LI>Max Depth = 168 + Unknown Stack Size
 <LI>Call Chain = SystemClock_Config &rArr; HAL_RCC_ClockConfig &rArr; HAL_RCC_GetSysClockFreq &rArr; __aeabi_uldivmod
 </UL>

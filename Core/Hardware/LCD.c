@@ -11,9 +11,18 @@ _lcd_dev lcddev;
 uint16_t POINT_COLOR = 0x0000, BACK_COLOR = 0xFFFF;
 uint16_t DeviceCode;
 
+/**
+ * @brief SPI传输完成回调函数。
+ * 当通过SPI1接口发送数据完成时，此回调函数被调用。
+ * @param hspi: 指向SPI句柄的指针，包含SPI状态信息。
+ * @retval None
+ */
 void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi)
 {
-		LCD_CS_SET;
+	if(hspi->Instance==SPI1)// 检查完成传输的SPI外设是否是SPI1
+	{
+		LCD_CS_SET;	// LCD片选引脚置高电平，停止发送
+	}
 }
 
 /**
