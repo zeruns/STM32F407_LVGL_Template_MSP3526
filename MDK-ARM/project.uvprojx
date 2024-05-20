@@ -693,6 +693,16 @@
               <FileType>1</FileType>
               <FilePath>..\Core\Hardware\LCD.c</FilePath>
             </File>
+            <File>
+              <FileName>FT6336.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Hardware\FT6336.c</FilePath>
+            </File>
+            <File>
+              <FileName>touch.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Hardware\touch.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

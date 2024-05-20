@@ -24,7 +24,7 @@ typedef struct
 } _lcd_dev;
 
 // LCD参数
-extern _lcd_dev lcddev; // 管理LCD重要参数
+extern volatile _lcd_dev lcddev; // 管理LCD重要参数
 /////////////////////////////////////用户配置区///////////////////////////////////
 #define USE_HORIZONTAL 0 // 定义液晶屏顺时针旋转方向 	0-0度旋转，1-90度旋转，2-180度旋转，3-270度旋转
 
@@ -48,14 +48,13 @@ extern uint16_t BACK_COLOR;	 // 背景颜色.默认为白色
 // 如果使用官方库函数定义下列底层，速度将会下降到14帧每秒，建议采用我司推荐方法
 // 以下IO定义直接操作寄存器，快速IO操作，刷屏速率可以达到28帧每秒！
 
-#define LCD_CS_SET LCD_CS_GPIO_Port->BSRR = LCD_CS_Pin // 片选端口  PE6
-#define LCD_RS_SET LCD_RS_GPIO_Port->BSRR = LCD_RS_Pin // 数据/命令 PC0
+#define LCD_CS_SET LCD_CS_GPIO_Port->BSRR = LCD_CS_Pin	  // 片选端口  PE6
+#define LCD_RS_SET LCD_RS_GPIO_Port->BSRR = LCD_RS_Pin	  // 数据/命令 PC0
 #define LCD_RST_SET LCD_RST_GPIO_Port->BSRR = LCD_RST_Pin // 复位 PC1
 
-#define LCD_CS_CLR LCD_CS_GPIO_Port->BSRR = (uint32_t)LCD_CS_Pin << 16U // 片选端口  PE6
-#define LCD_RS_CLR LCD_RS_GPIO_Port->BSRR = (uint32_t)LCD_RS_Pin << 16U // 数据/命令 PC0
+#define LCD_CS_CLR LCD_CS_GPIO_Port->BSRR = (uint32_t)LCD_CS_Pin << 16U	   // 片选端口  PE6
+#define LCD_RS_CLR LCD_RS_GPIO_Port->BSRR = (uint32_t)LCD_RS_Pin << 16U	   // 数据/命令 PC0
 #define LCD_RST_CLR LCD_RST_GPIO_Port->BSRR = (uint32_t)LCD_RST_Pin << 16U // 复位 PC1
-
 
 /*
 #define LCD_CS_SET HAL_GPIO_WritePin(LCD_CS_GPIO_Port, LCD_CS_Pin, GPIO_PIN_SET)	// 片选端口
@@ -122,8 +121,8 @@ uint16_t LCD_Read_ID(void);
 
 void LCDDrawPoint(uint16_t x, uint16_t y, uint16_t color);
 void LCD_Fill(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, uint16_t color);
-void Lcd_WriteData(uint8_t *Data,uint32_t Size);
-void LCD_Fill_LVGL(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, lv_color_t * color_p);
+void Lcd_WriteData(uint8_t *Data, uint32_t Size);
+void LCD_Fill_LVGL(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, lv_color_t *color_p);
 
 void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi);
 

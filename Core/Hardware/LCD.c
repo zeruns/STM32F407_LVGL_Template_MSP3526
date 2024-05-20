@@ -5,7 +5,7 @@
 
 // 管理LCD重要参数
 // 默认为竖屏
-_lcd_dev lcddev;
+volatile _lcd_dev lcddev;
 
 // 画笔颜色,背景颜色
 uint16_t POINT_COLOR = 0x0000, BACK_COLOR = 0xFFFF;
@@ -19,9 +19,9 @@ uint16_t DeviceCode;
  */
 void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi)
 {
-	if(hspi->Instance==SPI1)// 检查完成传输的SPI外设是否是SPI1
+	if (hspi->Instance == SPI1) // 检查完成传输的SPI外设是否是SPI1
 	{
-		LCD_CS_SET;	// LCD片选引脚置高电平，停止发送
+		LCD_CS_SET; // LCD片选引脚置高电平，停止发送
 	}
 }
 
@@ -33,7 +33,7 @@ void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi)
  */
 uint8_t SPI_SwapByte(uint8_t ByteSend)
 {
-	uint8_t rxData = 0;		// 用于接收数据的变量
+	uint8_t rxData = 0;														// 用于接收数据的变量
 	HAL_SPI_TransmitReceive(LCD_SPI, &ByteSend, &rxData, 1, HAL_MAX_DELAY); // SPI发送数据并接收数据
 	return rxData;
 }
@@ -60,7 +60,8 @@ void SPI_Send2Byte(uint16_t Data)
  */
 void LCD_WR_REG(uint8_t data)
 {
-	while(HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY);
+	while (HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY)
+		;
 	LCD_CS_CLR;
 	LCD_RS_CLR;
 	SPI_SwapByte(data);
@@ -76,7 +77,8 @@ void LCD_WR_REG(uint8_t data)
  ******************************************************************************/
 void LCD_WR_DATA(uint8_t data)
 {
-	while(HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY);
+	while (HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY)
+		;
 	LCD_CS_CLR;
 	LCD_RS_SET;
 	SPI_SwapByte(data);
@@ -86,7 +88,8 @@ void LCD_WR_DATA(uint8_t data)
 uint8_t LCD_RD_DATA(void)
 {
 	uint8_t data;
-	while(HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY);
+	while (HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY)
+		;
 	LCD_CS_CLR;
 	LCD_RS_SET;
 	SPI1_SetSpeed(0);
@@ -142,25 +145,28 @@ void LCD_ReadRAM_Prepare(void)
  ******************************************************************************/
 void Lcd_WriteData_16Bit(uint16_t Data)
 {
-	while(HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY);
+	while (HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY)
+		;
 	LCD_CS_CLR;
 	LCD_RS_SET;
 	SPI_Send2Byte(Data);
 	LCD_CS_SET;
 }
 
-void Lcd_WriteData(uint8_t *Data,uint32_t Size)
+void Lcd_WriteData(uint8_t *Data, uint32_t Size)
 {
-	while(HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY);
+	while (HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY)
+		;
 	LCD_CS_CLR;
 	LCD_RS_SET;
 	HAL_SPI_Transmit(LCD_SPI, Data, Size, HAL_MAX_DELAY);
 	LCD_CS_SET;
 }
 
-CCMRAM void Lcd_WriteData_DMA(uint8_t *Data,uint32_t Size)
+CCMRAM void Lcd_WriteData_DMA(uint8_t *Data, uint32_t Size)
 {
-	while(HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY);
+	while (HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY)
+		;
 	LCD_CS_CLR;
 	LCD_RS_SET;
 	HAL_SPI_Transmit_DMA(LCD_SPI, Data, Size);
@@ -169,7 +175,8 @@ CCMRAM void Lcd_WriteData_DMA(uint8_t *Data,uint32_t Size)
 uint16_t Lcd_ReadData_16Bit(void)
 {
 	uint16_t r, g;
-	while(HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY);
+	while (HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY)
+		;
 	LCD_CS_CLR;
 	LCD_RS_CLR;
 	SPI_SwapByte(lcddev.rramcmd);
@@ -247,58 +254,61 @@ void LCD_Fill(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, uint16_t color
 	LCD_SetWindows(0, 0, lcddev.width - 1, lcddev.height - 1); // 恢复窗口设置为全屏
 }
 
-CCMRAM void LCD_Fill_LVGL(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, lv_color_t * color_p)
+CCMRAM void LCD_Fill_LVGL(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, lv_color_t *color_p)
 {
 	uint32_t i, j;
-	uint16_t width = ex - sx + 1;	// 得到填充的宽度
-	uint16_t height = ey - sy + 1;	// 高度
-	uint32_t Pixel = width*height;
+	uint16_t width = ex - sx + 1;  // 得到填充的宽度
+	uint16_t height = ey - sy + 1; // 高度
+	uint32_t Pixel = width * height;
 	LCD_SetWindows(sx, sy, ex, ey); // 设置显示窗口
-//	for (i = 0; i < height; i++)
-//	{
-//		for (j = 0; j < width; j++){
-//			Lcd_WriteData_16Bit(color_p->full); // 写入数据		
-//		}
-//	}
-	
-	uint8_t data[Pixel*2];
-	for(i=0;i<Pixel;i++){
+									//	for (i = 0; i < height; i++)
+									//	{
+									//		for (j = 0; j < width; j++){
+									//			Lcd_WriteData_16Bit(color_p->full); // 写入数据
+									//		}
+									//	}
+
+	uint8_t data[Pixel * 2];
+	for (i = 0; i < Pixel; i++)
+	{
 		// 将16位的颜色数据拆分成两个字节的数据
-		data[i*2] = (color_p->full)>> 8;
-		data[i*2+1] = (uint8_t)(color_p->full);
+		data[i * 2] = (color_p->full) >> 8;
+		data[i * 2 + 1] = (uint8_t)(color_p->full);
 		color_p++;
-		if((Pixel*2>=6000) && (i==(Pixel/2)))
+		if ((Pixel * 2 >= 6000) && (i == (Pixel / 2)))
 		{
 			// 要发送的数据字节数大于6000时分开两次发送
-			if(Pixel%2==1)
+			if (Pixel % 2 == 1)
 			{
 				// 奇数时发送数据+1，凑个偶数，因为颜色数据是两个字节
-				Lcd_WriteData_DMA(data,Pixel+1);
+				Lcd_WriteData_DMA(data, Pixel + 1);
 			}
-			else{
-				Lcd_WriteData_DMA(data,Pixel);
+			else
+			{
+				Lcd_WriteData_DMA(data, Pixel);
 			}
 		}
 	}
-	if(width*height*2>=6000)
+	if (width * height * 2 >= 6000)
 	{
 		// 发送剩余数据
-		if((width*height)%2==1)
+		if ((width * height) % 2 == 1)
 		{
-			uint8_t *temp = &data[Pixel+1];
-			Lcd_WriteData_DMA(temp,Pixel-1);
+			uint8_t *temp = &data[Pixel + 1];
+			Lcd_WriteData_DMA(temp, Pixel - 1);
 		}
-		else{
+		else
+		{
 			uint8_t *temp = &data[Pixel];
-			Lcd_WriteData_DMA(temp,Pixel);
+			Lcd_WriteData_DMA(temp, Pixel);
 		}
 	}
 	else
 	{
 		// 要发送的数据小于6000字节时一次全部发送
-		Lcd_WriteData_DMA(data,Pixel*2);
+		Lcd_WriteData_DMA(data, Pixel * 2);
 	}
-	
+
 	LCD_SetWindows(0, 0, lcddev.width - 1, lcddev.height - 1); // 恢复窗口设置为全屏
 }
 
@@ -313,19 +323,19 @@ void LCD_Clear(uint16_t Color)
 {
 	unsigned int i, m;
 	LCD_SetWindows(0, 0, lcddev.width - 1, lcddev.height - 1);
-	uint8_t data[lcddev.width*2];
-	uint16_t n=0;
+	uint8_t data[lcddev.width * 2];
+	uint16_t n = 0;
 	for (i = 0; i < lcddev.height; i++)
 	{
 		for (m = 0; m < lcddev.width; m++)
 		{
-			//Lcd_WriteData_16Bit(Color);
+			// Lcd_WriteData_16Bit(Color);
 			data[n] = Color >> 8;
-			data[n+1] = (uint8_t)Color;
-			n=n+2;
+			data[n + 1] = (uint8_t)Color;
+			n = n + 2;
 		}
-		Lcd_WriteData_DMA(data,lcddev.width*2);
-		n=0;
+		Lcd_WriteData_DMA(data, lcddev.width * 2);
+		n = 0;
 	}
 }
 
@@ -545,7 +555,8 @@ uint16_t LCD_Read_ID(void)
 
 	LCD_WR_REG(0xF0);
 	LCD_WR_DATA(0x96);
-	while(HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY);
+	while (HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY)
+		;
 	LCD_CS_CLR;
 	for (i = 1; i < 4; i++)
 	{

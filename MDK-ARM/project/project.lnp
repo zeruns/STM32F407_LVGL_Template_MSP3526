@@ -27,6 +27,8 @@
 "project\lv_demo_stress.o"
 "project\lv_demo_keypad_encoder.o"
 "project\lcd.o"
+"project\ft6336.o"
+"project\touch.o"
 "project\stm32f4xx_hal_crc.o"
 "project\stm32f4xx_hal_rcc.o"
 "project\stm32f4xx_hal_rcc_ex.o"
