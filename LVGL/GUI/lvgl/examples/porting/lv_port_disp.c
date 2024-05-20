@@ -49,22 +49,6 @@ static void disp_flush(lv_disp_drv_t * disp_drv, const lv_area_t * area, lv_colo
 /**********************
  *   GLOBAL FUNCTIONS
  **********************/
- 
-void LCD_Fill_LVGL(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, lv_color_t * color_p)
-{
-	uint16_t i, j;
-	uint16_t width = ex - sx + 1;	// 得到填充的宽度
-	uint16_t height = ey - sy + 1;	// 高度
-	LCD_SetWindows(sx, sy, ex, ey); // 设置显示窗口
-	for (i = 0; i < height; i++)
-	{
-		for (j = 0; j < width; j++){
-			Lcd_WriteData_16Bit(color_p->full); // 写入数据
-			color_p++;
-		}
-	}
-	LCD_SetWindows(0, 0, lcddev.width - 1, lcddev.height - 1); // 恢复窗口设置为全屏
-}
 
 void lv_port_disp_init(void)
 {
@@ -194,19 +178,6 @@ static void disp_flush(lv_disp_drv_t * disp_drv, const lv_area_t * area, lv_colo
 //        }
 		
 		LCD_Fill_LVGL(area->x1,area->y1,area->x2,area->y2,color_p);
-		
-//		uint16_t i, j;
-//		uint16_t width = area->x2 - area->x1 + 1;	// 得到填充的宽度
-//		uint16_t height = area->y2 - area->y1 + 1;	// 高度
-//		LCD_SetWindows(area->x1, area->y1, area->x2, area->y2); // 设置显示窗口
-//		for (i = 0; i < height; i++)
-//		{
-//			for (j = 0; j < width; j++){
-//				Lcd_WriteData_16Bit(color_p->full); // 写入数据
-//				color_p++;
-//			}
-//		}
-//		LCD_SetWindows(0, 0, lcddev.width - 1, lcddev.height - 1); // 恢复窗口设置为全屏
     }
 	
     /*IMPORTANT!!!
