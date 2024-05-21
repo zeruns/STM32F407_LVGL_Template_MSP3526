@@ -644,3 +644,19 @@ uint16_t LCD_Read_ID(void)
 	lcddev.id |= val[2];
 	return lcddev.id;
 }
+
+/**
+ * @brief 切换屏幕方向
+ * @param direction 要设置的LCD显示方向：
+ *                   0 - 0度（默认方向）
+ *                   1 - 90度（顺时针旋转）
+ *                   2 - 180度（旋转半圈）
+ *                   3 - 270度（逆时针旋转）
+ * @return None
+ */
+void LCD_Switch_Dir(uint8_t direction)
+{
+	LCD_direction(direction);			   // 设置屏幕旋转
+	lv_disp_set_rotation(NULL, direction); // 设置lvgl屏幕旋转
+	lv_port_indev_init();				   // LVGL输入设备初始化
+}

@@ -7,7 +7,9 @@
 #include "gpio.h"
 #include "tim.h"
 #include "usart.h"
+#include "lvgl.h"
 #include "lv_port_disp.h"
+#include "lv_port_indev.h"
 #include <string.h> // 引入字符串处理函数库
 
 // LCD重要参数集
@@ -123,6 +125,7 @@ void LCDDrawPoint(uint16_t x, uint16_t y, uint16_t color);
 void LCD_Fill(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, uint16_t color);
 void Lcd_WriteData(uint8_t *Data, uint32_t Size);
 void LCD_Fill_LVGL(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, lv_color_t *color_p);
+void LCD_Switch_Dir(uint8_t direction);
 
 void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi);
 

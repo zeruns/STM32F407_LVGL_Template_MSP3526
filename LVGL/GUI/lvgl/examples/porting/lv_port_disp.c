@@ -1,6 +1,7 @@
 /**
  * @file lv_port_disp_templ.c
- *
+ * @作者个人博客： https://blog.zeruns.tech
+ * @B站空间： https://space.bilibili.com/8320520
  */
 
 /*Copy this file as "lv_port_disp.c" and set this value to "1" to enable content*/
