@@ -6,12 +6,12 @@
         "output-debug-info": "enable"
     },
     "c/cpp-compiler": {
-        "optimization": "level-3",
-        "one-elf-section-per-function": true,
+        "optimization": "level-size",
         "c99-mode": true,
         "C_FLAGS": "--diag_suppress=1 --diag_suppress=1295",
         "CXX_FLAGS": "--diag_suppress=1 --diag_suppress=1295",
-        "warnings": "all-warnings"
+        "warnings": "all-warnings",
+        "one-elf-section-per-function": true
     },
     "asm-compiler": {},
     "linker": {

@@ -3,7 +3,7 @@
 <title>Static Call Graph - [project\project.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image project\project.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6210000: Last Updated: Tue May 21 04:22:29 2024
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6210000: Last Updated: Tue May 21 05:21:51 2024
 <BR><P>
 <H3>Maximum Stack Usage =       1064 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -250,8 +250,12 @@ Function Pointers
  <LI><a href="#[f5]">lv_dropdown_list_event</a> from lv_dropdown.o(.text.lv_dropdown_list_event) referenced from lv_dropdown.o(.rodata.lv_dropdownlist_class)
  <LI><a href="#[f3]">lv_dropdownlist_constructor</a> from lv_dropdown.o(.text.lv_dropdownlist_constructor) referenced from lv_dropdown.o(.rodata.lv_dropdownlist_class)
  <LI><a href="#[f4]">lv_dropdownlist_destructor</a> from lv_dropdown.o(.text.lv_dropdownlist_destructor) referenced from lv_dropdown.o(.rodata.lv_dropdownlist_class)
+ <LI><a href="#[f7]">lv_font_get_bitmap_fmt_txt</a> from lv_font_fmt_txt.o(.text.lv_font_get_bitmap_fmt_txt) referenced from lv_font_montserrat_12.o(.rodata.lv_font_montserrat_12)
  <LI><a href="#[f7]">lv_font_get_bitmap_fmt_txt</a> from lv_font_fmt_txt.o(.text.lv_font_get_bitmap_fmt_txt) referenced from lv_font_montserrat_14.o(.rodata.lv_font_montserrat_14)
+ <LI><a href="#[f7]">lv_font_get_bitmap_fmt_txt</a> from lv_font_fmt_txt.o(.text.lv_font_get_bitmap_fmt_txt) referenced from lv_font_montserrat_16.o(.rodata.lv_font_montserrat_16)
+ <LI><a href="#[f6]">lv_font_get_glyph_dsc_fmt_txt</a> from lv_font_fmt_txt.o(.text.lv_font_get_glyph_dsc_fmt_txt) referenced from lv_font_montserrat_12.o(.rodata.lv_font_montserrat_12)
  <LI><a href="#[f6]">lv_font_get_glyph_dsc_fmt_txt</a> from lv_font_fmt_txt.o(.text.lv_font_get_glyph_dsc_fmt_txt) referenced from lv_font_montserrat_14.o(.rodata.lv_font_montserrat_14)
+ <LI><a href="#[f6]">lv_font_get_glyph_dsc_fmt_txt</a> from lv_font_fmt_txt.o(.text.lv_font_get_glyph_dsc_fmt_txt) referenced from lv_font_montserrat_16.o(.rodata.lv_font_montserrat_16)
  <LI><a href="#[f8]">lv_img_constructor</a> from lv_img.o(.text.lv_img_constructor) referenced from lv_img.o(.rodata.lv_img_class)
  <LI><a href="#[76]">lv_img_decoder_built_in_close</a> from lv_img_decoder.o(.text.lv_img_decoder_built_in_close) referenced 2 times from lv_img_decoder.o(.text._lv_img_decoder_init)
  <LI><a href="#[73]">lv_img_decoder_built_in_info</a> from lv_img_decoder.o(.text.lv_img_decoder_built_in_info) referenced 2 times from lv_img_decoder.o(.text._lv_img_decoder_init)
@@ -3434,7 +3438,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lv_colorwheel_event
 </UL>
 
-<P><STRONG><a name="[340]"></a>lv_demo_widgets</STRONG> (Thumb, 9496 bytes, Stack size 232 bytes, lv_demo_widgets.o(.text.lv_demo_widgets))
+<P><STRONG><a name="[340]"></a>lv_demo_widgets</STRONG> (Thumb, 9540 bytes, Stack size 232 bytes, lv_demo_widgets.o(.text.lv_demo_widgets))
 <BR><BR>[Stack]<UL><LI>Max Depth = 856 + Unknown Stack Size
 <LI>Call Chain = lv_demo_widgets &rArr; lv_tabview_add_tab &rArr; lv_tabview_set_act &rArr; lv_obj_update_layout &rArr; layout_update_core &rArr;  layout_update_core (Cycle)
 </UL>
@@ -4700,7 +4704,9 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[2d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_glyph_dsc_id
 </UL>
-<BR>[Address Reference Count : 1]<UL><LI> lv_font_montserrat_14.o(.rodata.lv_font_montserrat_14)
+<BR>[Address Reference Count : 3]<UL><LI> lv_font_montserrat_14.o(.rodata.lv_font_montserrat_14)
+<LI> lv_font_montserrat_16.o(.rodata.lv_font_montserrat_16)
+<LI> lv_font_montserrat_12.o(.rodata.lv_font_montserrat_12)
 </UL>
 <P><STRONG><a name="[387]"></a>lv_font_get_glyph_bitmap</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, lv_font.o(.text.lv_font_get_glyph_bitmap))
 <BR><BR>[Called By]<UL><LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lv_draw_sw_letter
@@ -4720,7 +4726,9 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[2d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_lv_utils_bsearch
 <LI><a href="#[2d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_glyph_dsc_id
 </UL>
-<BR>[Address Reference Count : 1]<UL><LI> lv_font_montserrat_14.o(.rodata.lv_font_montserrat_14)
+<BR>[Address Reference Count : 3]<UL><LI> lv_font_montserrat_14.o(.rodata.lv_font_montserrat_14)
+<LI> lv_font_montserrat_16.o(.rodata.lv_font_montserrat_16)
+<LI> lv_font_montserrat_12.o(.rodata.lv_font_montserrat_12)
 </UL>
 <P><STRONG><a name="[240]"></a>lv_font_get_glyph_width</STRONG> (Thumb, 26 bytes, Stack size 24 bytes, lv_font.o(.text.lv_font_get_glyph_width))
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = lv_font_get_glyph_width &rArr; lv_font_get_glyph_dsc
@@ -5753,7 +5761,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[3b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lv_init
 </UL>
 
-<P><STRONG><a name="[20b]"></a>lv_mem_monitor</STRONG> (Thumb, 106 bytes, Stack size 16 bytes, lv_mem.o(.text.lv_mem_monitor))
+<P><STRONG><a name="[20b]"></a>lv_mem_monitor</STRONG> (Thumb, 104 bytes, Stack size 16 bytes, lv_mem.o(.text.lv_mem_monitor))
 <BR><BR>[Stack]<UL><LI>Max Depth = 44<LI>Call Chain = lv_mem_monitor &rArr; lv_memset &rArr; __aeabi_memset &rArr; _memset &rArr; _memset_w
 </UL>
 <BR>[Calls]<UL><LI><a href="#[2a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lv_memset
@@ -9493,9 +9501,9 @@ Global Symbols
 <P><STRONG><a name="[3d1]"></a>lv_tlsf_free</STRONG> (Thumb, 158 bytes, Stack size 24 bytes, lv_tlsf.o(.text.lv_tlsf_free))
 <BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = lv_tlsf_free &rArr; block_merge_next &rArr; block_remove &rArr; remove_free_block
 </UL>
-<BR>[Calls]<UL><LI><a href="#[25c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;block_remove
+<BR>[Calls]<UL><LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;block_insert
+<LI><a href="#[25c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;block_remove
 <LI><a href="#[25b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;block_merge_next
-<LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;block_insert
 </UL>
 <BR>[Called By]<UL><LI><a href="#[1f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lv_mem_free
 <LI><a href="#[2de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lv_mem_realloc
@@ -9521,11 +9529,11 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = lv_tlsf_realloc &rArr; lv_tlsf_free &rArr; block_merge_next &rArr; block_remove &rArr; remove_free_block
 </UL>
 <BR>[Calls]<UL><LI><a href="#[2b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lv_memcpy
-<LI><a href="#[25b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;block_merge_next
-<LI><a href="#[25e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;block_split
 <LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;block_insert
 <LI><a href="#[3d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lv_tlsf_free
 <LI><a href="#[3d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lv_tlsf_malloc
+<LI><a href="#[25b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;block_merge_next
+<LI><a href="#[25e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;block_split
 </UL>
 <BR>[Called By]<UL><LI><a href="#[2de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lv_mem_realloc
 </UL>
@@ -11732,17 +11740,17 @@ Local Symbols
 <P><STRONG><a name="[25f]"></a>block_insert</STRONG> (Thumb, 112 bytes, Stack size 16 bytes, lv_tlsf.o(.text.block_insert))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = block_insert
 </UL>
-<BR>[Called By]<UL><LI><a href="#[45e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lv_tlsf_add_pool
-<LI><a href="#[25d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;block_prepare_used
+<BR>[Called By]<UL><LI><a href="#[25d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;block_prepare_used
 <LI><a href="#[3d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lv_tlsf_realloc
 <LI><a href="#[3d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lv_tlsf_free
+<LI><a href="#[45e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lv_tlsf_add_pool
 </UL>
 
 <P><STRONG><a name="[25a]"></a>remove_free_block</STRONG> (Thumb, 96 bytes, Stack size 8 bytes, lv_tlsf.o(.text.remove_free_block))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = remove_free_block
 </UL>
-<BR>[Called By]<UL><LI><a href="#[25c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;block_remove
-<LI><a href="#[259]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;block_locate_free
+<BR>[Called By]<UL><LI><a href="#[259]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;block_locate_free
+<LI><a href="#[25c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;block_remove
 </UL>
 
 <P><STRONG><a name="[259]"></a>block_locate_free</STRONG> (Thumb, 168 bytes, Stack size 16 bytes, lv_tlsf.o(.text.block_locate_free))
@@ -11756,8 +11764,8 @@ Local Symbols
 <P><STRONG><a name="[25d]"></a>block_prepare_used</STRONG> (Thumb, 114 bytes, Stack size 16 bytes, lv_tlsf.o(.text.block_prepare_used))
 <BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = block_prepare_used &rArr; block_insert
 </UL>
-<BR>[Calls]<UL><LI><a href="#[25e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;block_split
-<LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;block_insert
+<BR>[Calls]<UL><LI><a href="#[25f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;block_insert
+<LI><a href="#[25e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;block_split
 </UL>
 <BR>[Called By]<UL><LI><a href="#[3d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lv_tlsf_malloc
 </UL>
@@ -11783,8 +11791,8 @@ Local Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[25a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;remove_free_block
 </UL>
-<BR>[Called By]<UL><LI><a href="#[25b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;block_merge_next
-<LI><a href="#[3d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lv_tlsf_free
+<BR>[Called By]<UL><LI><a href="#[3d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lv_tlsf_free
+<LI><a href="#[25b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;block_merge_next
 </UL>
 
 <P><STRONG><a name="[4]"></a>lv_txt_utf8_size</STRONG> (Thumb, 56 bytes, Stack size 0 bytes, lv_txt.o(.text.lv_txt_utf8_size))

@@ -299,9 +299,9 @@ CCMRAM void LCD_Fill_LVGL(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, lv
 		data[i * 2] = (color_p->full) >> 8;
 		data[i * 2 + 1] = (uint8_t)(color_p->full);
 		color_p++;
-		if ((Pixel * 2 >= 6000) && (i == (Pixel / 2)))
+		if ((Pixel * 2 >= 30000) && (i == (Pixel / 2)))
 		{
-			// 要发送的数据字节数大于6000时分开两次发送
+			// 要发送的数据字节数大于30000时分开两次发送
 			if (Pixel % 2 == 1)
 			{
 				// 奇数时发送数据+1，凑个偶数，因为颜色数据是两个字节
@@ -313,7 +313,7 @@ CCMRAM void LCD_Fill_LVGL(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, lv
 			}
 		}
 	}
-	if (width * height * 2 >= 6000)
+	if (width * height * 2 >= 30000)
 	{
 		// 发送剩余数据
 		if ((width * height) % 2 == 1)
@@ -329,7 +329,7 @@ CCMRAM void LCD_Fill_LVGL(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, lv
 	}
 	else
 	{
-		// 要发送的数据小于6000字节时一次全部发送
+		// 要发送的数据小于30000字节时一次全部发送
 		Lcd_WriteData_DMA(data, Pixel * 2);
 	}
 
@@ -500,16 +500,20 @@ void LCD_Init(void)
 void LCD_SetWindows(uint16_t xStar, uint16_t yStar, uint16_t xEnd, uint16_t yEnd)
 {
 	LCD_WR_REG(lcddev.setxcmd);
-	LCD_WR_DATA(xStar >> 8);
+	/*LCD_WR_DATA(xStar >> 8);
 	LCD_WR_DATA(0x00FF & xStar);
 	LCD_WR_DATA(xEnd >> 8);
-	LCD_WR_DATA(0x00FF & xEnd);
+	LCD_WR_DATA(0x00FF & xEnd);*/
+	Lcd_WriteData_16Bit(xStar);
+	Lcd_WriteData_16Bit(xEnd);
 
 	LCD_WR_REG(lcddev.setycmd);
-	LCD_WR_DATA(yStar >> 8);
+	/*LCD_WR_DATA(yStar >> 8);
 	LCD_WR_DATA(0x00FF & yStar);
 	LCD_WR_DATA(yEnd >> 8);
-	LCD_WR_DATA(0x00FF & yEnd);
+	LCD_WR_DATA(0x00FF & yEnd);*/
+	Lcd_WriteData_16Bit(yStar);
+	Lcd_WriteData_16Bit(yEnd);
 
 	LCD_WriteRAM_Prepare(); // 开始写入GRAM
 }
