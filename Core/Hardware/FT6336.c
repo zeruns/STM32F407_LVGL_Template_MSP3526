@@ -155,6 +155,10 @@ uint8_t FT6336_Scan(void)
 						tp_dev.y[i] = ((uint16_t)(buf[0] & 0X0F) << 8) + buf[1];
 						tp_dev.x[i] = lcddev.width - (((uint16_t)(buf[2] & 0X0F) << 8) + buf[3]);
 						break;
+					case 4:
+						tp_dev.x[i] = lcddev.height - (((uint16_t)(buf[0] & 0X0F) << 8) + buf[1]);
+						tp_dev.y[i] = lcddev.width - (((uint16_t)(buf[2] & 0X0F) << 8) + buf[3]);
+						break;
 					}
 					// if((buf[0]&0XF0)!=0X80)tp_dev.x[i]=tp_dev.y[i]=0;//必须是contact事件，才认为有效
 					// USART1_Printf("x[%d]:%d,y[%d]:%d\r\n",i,tp_dev.x[i],i,tp_dev.y[i]);

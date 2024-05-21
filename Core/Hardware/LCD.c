@@ -658,5 +658,11 @@ void LCD_Switch_Dir(uint8_t direction)
 {
 	LCD_direction(direction);			   // 设置屏幕旋转
 	lv_disp_set_rotation(NULL, direction); // 设置lvgl屏幕旋转
-	lv_port_indev_init();				   // LVGL输入设备初始化
+	if (direction == 0 || direction == 2)
+	{
+		lcddev.dir = 0;
+	}
+	else{
+		lcddev.dir = 4;
+	}
 }

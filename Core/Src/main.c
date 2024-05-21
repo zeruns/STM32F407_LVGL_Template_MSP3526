@@ -126,10 +126,12 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   USART1_Printf("LCD ID:%d\r\n", LCD_Read_ID());
 
-   lv_demo_widgets();
+  lv_demo_widgets();
   //  lv_demo_stress();
-  //lv_demo_benchmark();
-  // lv_demo_music(); 
+  // lv_demo_benchmark();
+  // lv_demo_music();
+
+  LCD_Switch_Dir(0); // 旋转屏幕方向
 
   while (1)
   {
