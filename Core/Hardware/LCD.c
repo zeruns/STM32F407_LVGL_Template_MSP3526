@@ -1,5 +1,11 @@
 #include "LCD.h"
 
+/**
+ * @brief ST7796 LCD驱动程序。
+ * @作者个人博客： https://blog.zeruns.tech
+ * @B站空间： https://space.bilibili.com/8320520
+ */
+
 // LCD屏使用的SPI接口
 #define LCD_SPI &hspi1
 
@@ -198,7 +204,7 @@ CCMRAM void Lcd_WriteData_DMA(uint8_t *Data, uint32_t Size)
  */
 uint16_t Lcd_ReadData_16Bit(void)
 {
-	uint16_t r, g;	
+	uint16_t r, g;
 	while (HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY)
 		;						  // 等待SPI总线空闲
 	LCD_CS_CLR;					  // LCD片选引脚置低电平，选中LCD
@@ -216,54 +222,55 @@ uint16_t Lcd_ReadData_16Bit(void)
 	return r;					  // 返回数据
 }
 
-/*****************************************************************************
- * @name       :void LCD_DrawPoint(uint16_t x,uint16_t y)
- * @date       :2018-08-09
- * @function   :Write a pixel data at a specified location
- * @parameters :x:the x coordinate of the pixel
-				y:the y coordinate of the pixel
- * @retvalue   :None
-******************************************************************************/
+/**
+ * @brief 在LCD上绘制一个点
+ * 在指定的坐标位置 `(x, y)` 上绘制一个点，点的颜色由 `POINT_COLOR` 定义。
+ * @param x 点的x坐标
+ * @param y 点的y坐标
+ */
 void LCD_DrawPoint(uint16_t x, uint16_t y)
 {
-	LCD_SetCursor(x, y); // 设置光标位置
-	Lcd_WriteData_16Bit(POINT_COLOR);
+	LCD_SetCursor(x, y);			  // 设置光标位置
+	Lcd_WriteData_16Bit(POINT_COLOR); // 写入16位数据
 }
 
+/**
+ * @brief 读取LCD屏幕指定点的颜色值
+ * 在LCD屏幕上，根据给定的x和y坐标，读取指定点的颜色值。
+ * @param x x坐标
+ * @param y y坐标
+ * @return 返回指定点的颜色值
+ */
 uint16_t LCD_ReadPoint(uint16_t x, uint16_t y)
 {
 	uint16_t color;
-	LCD_SetCursor(x, y); // 设置光标位置
-	color = Lcd_ReadData_16Bit();
-	return color;
+	LCD_SetCursor(x, y);		  // 设置光标位置
+	color = Lcd_ReadData_16Bit(); // 读取16位数据
+	return color;				  // 返回颜色值
 }
 
-/*******************************************************************
- * @name       :void GUI_DrawPoint(uint16_t x,uint16_t y,uint16_t color)
- * @date       :2018-08-09
- * @function   :draw a point in LCD screen
- * @parameters :x:the x coordinate of the point
-				y:the y coordinate of the point
-								color:the color value of the point
- * @retvalue   :None
-********************************************************************/
+/**
+ * @brief 在LCD上绘制一个点
+ * 在LCD上指定位置绘制一个点，并设置该点的颜色。
+ * @param x 点的横坐标
+ * @param y 点的纵坐标
+ * @param color 点的颜色
+ */
 void LCDDrawPoint(uint16_t x, uint16_t y, uint16_t color)
 {
-	LCD_SetCursor(x, y); // 设置光标位置
-	Lcd_WriteData_16Bit(color);
+	LCD_SetCursor(x, y);		// 设置光标位置
+	Lcd_WriteData_16Bit(color); // 写入16位数据
 }
 
-/*******************************************************************
- * @name       :void LCD_Fill(uint16_t sx,uint16_t sy,uint16_t ex,uint16_t ey,uint16_t color)
- * @date       :2018-08-09
- * @function   :fill the specified area
- * @parameters :sx:the bebinning x coordinate of the specified area
-				sy:the bebinning y coordinate of the specified area
-								ex:the ending x coordinate of the specified area
-								ey:the ending y coordinate of the specified area
-								color:the filled color value
- * @retvalue   :None
-********************************************************************/
+/**
+ * @brief 填充LCD屏幕指定矩形区域
+ * 在LCD屏幕上填充指定矩形区域的颜色。
+ * @param sx 起始点的横坐标
+ * @param sy 起始点的纵坐标
+ * @param ex 结束点的横坐标
+ * @param ey 结束点的纵坐标
+ * @param color 填充颜色
+ */
 void LCD_Fill(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, uint16_t color)
 {
 	uint16_t i, j;
@@ -278,98 +285,117 @@ void LCD_Fill(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, uint16_t color
 	LCD_SetWindows(0, 0, lcddev.width - 1, lcddev.height - 1); // 恢复窗口设置为全屏
 }
 
+/**
+ * 使用LVGL库的颜色值填充LCD指定区域。
+ * @param sx 起始X坐标
+ * @param sy 起始Y坐标
+ * @param ex 结束X坐标
+ * @param ey 结束Y坐标
+ * @param color_p 指向要填充的颜色的指针
+ */
 CCMRAM void LCD_Fill_LVGL(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, lv_color_t *color_p)
 {
 	uint32_t i, j;
-	uint16_t width = ex - sx + 1;  // 得到填充的宽度
-	uint16_t height = ey - sy + 1; // 高度
-	uint32_t Pixel = width * height;
-	LCD_SetWindows(sx, sy, ex, ey); // 设置显示窗口
-									//	for (i = 0; i < height; i++)
-									//	{
-									//		for (j = 0; j < width; j++){
-									//			Lcd_WriteData_16Bit(color_p->full); // 写入数据
-									//		}
-									//	}
+	uint16_t width = ex - sx + 1;	 // 计算填充区域的宽度
+	uint16_t height = ey - sy + 1;	 // 计算填充区域的高度
+	uint32_t Pixel = width * height; // 计算填充区域像素个数
+	LCD_SetWindows(sx, sy, ex, ey);	 // 设置LCD的显示窗口为指定的区域
 
-	uint8_t data[Pixel * 2];
+//	for (i = 0; i < height; i++)
+//	{
+//		for (j = 0; j < width; j++){
+//			Lcd_WriteData_16Bit(color_p->full); // 写入数据
+//		}
+//	}
+
+// 数据分割值, 用于分批发送数据
+#define data_split 3000
+
+	uint8_t data[Pixel * 2]; // 创建一个数组用于存储颜色数据
+
 	for (i = 0; i < Pixel; i++)
 	{
-		// 将16位的颜色数据拆分成两个字节的数据
-		data[i * 2] = (color_p->full) >> 8;
-		data[i * 2 + 1] = (uint8_t)(color_p->full);
-		color_p++;
-		if ((Pixel * 2 >= 30000) && (i == (Pixel / 2)))
+		// 将颜色数据从16位转换为两个8位的数据
+		data[i * 2] = (color_p->full) >> 8;			// 获取高8位数据
+		data[i * 2 + 1] = (uint8_t)(color_p->full); // 获取低8位数据
+		color_p++;									// 指向下一个颜色值
+
+		// 判断数据量是否大于10000，如果大于则分批发送数据
+		if (Pixel > 10000)
 		{
-			// 要发送的数据字节数大于30000时分开两次发送
-			if (Pixel % 2 == 1)
+			if ((i + 1) % data_split == 0)
 			{
-				// 奇数时发送数据+1，凑个偶数，因为颜色数据是两个字节
-				Lcd_WriteData_DMA(data, Pixel + 1);
+				if ((i + 1) == data_split)
+				{
+					Lcd_WriteData_DMA(data, data_split * 2); // 以DMA方式发送数据
+				}
+				else
+				{
+					while (HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY)
+						;																			// 等待SPI总线空闲
+					uint8_t *temp = &data[((uint16_t)((i + 1) / data_split) - 1) * data_split * 2]; // 获取剩余数据
+					Lcd_WriteData_DMA(temp, data_split * 2);										// 以DMA方式发送数据
+				}
 			}
-			else
+			else if (((i + 1) % data_split > 0) && ((i + 1) > data_split) && (i == (Pixel - 1)))
 			{
-				Lcd_WriteData_DMA(data, Pixel);
+				if ((uint16_t)((i + 1) / data_split) == 1)
+				{
+					while (HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY)
+						;												 // 等待SPI总线空闲
+					uint8_t *temp = &data[data_split * 2];				 // 获取剩余数据
+					Lcd_WriteData_DMA(temp, ((i + 1) % data_split) * 2); // 以DMA方式发送数据
+				}
+				else
+				{
+					while (HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY)
+						;																	  // 等待SPI总线空闲
+					uint8_t *temp = &data[(uint16_t)((i + 1) / data_split) * data_split * 2]; // 获取剩余数据
+					Lcd_WriteData_DMA(temp, ((i + 1) % data_split) * 2);
+				}
 			}
 		}
 	}
-	if (width * height * 2 >= 30000)
+
+	if (Pixel <= 10000)
 	{
-		// 发送剩余数据
-		if ((width * height) % 2 == 1)
-		{
-			uint8_t *temp = &data[Pixel + 1];
-			Lcd_WriteData_DMA(temp, Pixel - 1);
-		}
-		else
-		{
-			uint8_t *temp = &data[Pixel];
-			Lcd_WriteData_DMA(temp, Pixel);
-		}
-	}
-	else
-	{
-		// 要发送的数据小于30000字节时一次全部发送
+		// 要发送的数据小于10000*2字节时一次全部发送
 		Lcd_WriteData_DMA(data, Pixel * 2);
 	}
 
 	LCD_SetWindows(0, 0, lcddev.width - 1, lcddev.height - 1); // 恢复窗口设置为全屏
 }
 
-/*****************************************************************************
- * @name       :void LCD_Clear(uint16_t Color)
- * @date       :2018-08-09
- * @function   :Full screen filled LCD screen
- * @parameters :color:Filled color
- * @retvalue   :None
- ******************************************************************************/
+/**
+ * @brief LCD清屏
+ * 将LCD屏幕的内容全部设置为指定颜色，实现屏幕清空效果。
+ * @param Color 颜色值
+ */
 void LCD_Clear(uint16_t Color)
 {
 	unsigned int i, m;
-	LCD_SetWindows(0, 0, lcddev.width - 1, lcddev.height - 1);
-	uint8_t data[lcddev.width * 2];
+	LCD_SetWindows(0, 0, lcddev.width - 1, lcddev.height - 1); // 设置显示窗口为全屏
+	uint8_t data[lcddev.width * 2];							   // 创建一个数组用于存储颜色数据
 	uint16_t n = 0;
 	for (i = 0; i < lcddev.height; i++)
 	{
 		for (m = 0; m < lcddev.width; m++)
 		{
 			// Lcd_WriteData_16Bit(Color);
-			data[n] = Color >> 8;
-			data[n + 1] = (uint8_t)Color;
+			data[n] = Color >> 8;		  // 获取高8位数据
+			data[n + 1] = (uint8_t)Color; // 获取低8位数据
 			n = n + 2;
 		}
-		Lcd_WriteData_DMA(data, lcddev.width * 2);
+		Lcd_WriteData_DMA(data, lcddev.width * 2); // 以DMA方式发送数据
 		n = 0;
 	}
 }
 
-/*****************************************************************************
- * @name       :void LCD_RESET(void)
- * @date       :2018-08-09
- * @function   :Reset LCD screen
- * @parameters :None
- * @retvalue   :None
- ******************************************************************************/
+/**
+ * @brief LCD屏复位
+ * 该函数用于复位LCD屏。
+ * 通过控制LCD_RST引脚，使LCD屏进入复位状态，并等待一段时间后释放复位。
+ */
 void LCD_RESET(void)
 {
 	LCD_RST_CLR;
@@ -378,13 +404,11 @@ void LCD_RESET(void)
 	HAL_Delay(30);
 }
 
-/*****************************************************************************
- * @name       :void LCD_RESET(void)
- * @date       :2018-08-09
- * @function   :Initialization LCD screen
- * @parameters :None
- * @retvalue   :None
- ******************************************************************************/
+/**
+ * @brief 初始化LCD显示屏
+ * 该函数用于初始化LCD显示屏，并设置相关的寄存器。
+ * @note 初始化完成后，LCD显示屏将处于可用状态，并设置显示方向为垂直方向。
+ */
 void LCD_Init(void)
 {
 
@@ -487,94 +511,101 @@ void LCD_Init(void)
 	LCD_Clear(WHITE);			   // 清全屏白色
 }
 
-/*****************************************************************************
- * @name       :void LCD_SetWindows(uint16_t xStar, uint16_t yStar,uint16_t xEnd,uint16_t yEnd)
- * @date       :2018-08-09
- * @function   :Setting LCD display window
- * @parameters :xStar:the bebinning x coordinate of the LCD display window
-								yStar:the bebinning y coordinate of the LCD display window
-								xEnd:the endning x coordinate of the LCD display window
-								yEnd:the endning y coordinate of the LCD display window
- * @retvalue   :None
-******************************************************************************/
+/**
+ * @brief 设置LCD显示窗口区域
+ * 将指定的起始坐标和结束坐标作为LCD的显示窗口区域进行设置，用于后续文本或图形的绘制。
+ * @param xStar 窗口起始点的X坐标
+ * @param yStar 窗口起始点的Y坐标
+ * @param xEnd 窗口结束点的X坐标
+ * @param yEnd 窗口结束点的Y坐标
+ */
 void LCD_SetWindows(uint16_t xStar, uint16_t yStar, uint16_t xEnd, uint16_t yEnd)
 {
-	LCD_WR_REG(lcddev.setxcmd);
+	LCD_WR_REG(lcddev.setxcmd); // 设置X坐标
 	/*LCD_WR_DATA(xStar >> 8);
 	LCD_WR_DATA(0x00FF & xStar);
 	LCD_WR_DATA(xEnd >> 8);
 	LCD_WR_DATA(0x00FF & xEnd);*/
-	Lcd_WriteData_16Bit(xStar);
-	Lcd_WriteData_16Bit(xEnd);
+	Lcd_WriteData_16Bit(xStar); // 设置X坐标起始点
+	Lcd_WriteData_16Bit(xEnd);	// 设置X坐标结束点
 
-	LCD_WR_REG(lcddev.setycmd);
+	LCD_WR_REG(lcddev.setycmd); // 设置Y坐标
 	/*LCD_WR_DATA(yStar >> 8);
 	LCD_WR_DATA(0x00FF & yStar);
 	LCD_WR_DATA(yEnd >> 8);
 	LCD_WR_DATA(0x00FF & yEnd);*/
-	Lcd_WriteData_16Bit(yStar);
-	Lcd_WriteData_16Bit(yEnd);
+	Lcd_WriteData_16Bit(yStar); // 设置Y坐标起始点
+	Lcd_WriteData_16Bit(yEnd);	// 设置Y坐标结束点
 
 	LCD_WriteRAM_Prepare(); // 开始写入GRAM
 }
 
-/*****************************************************************************
- * @name       :void LCD_SetCursor(uint16_t Xpos, uint16_t Ypos)
- * @date       :2018-08-09
- * @function   :Set coordinate value
- * @parameters :Xpos:the  x coordinate of the pixel
-								Ypos:the  y coordinate of the pixel
- * @retvalue   :None
-******************************************************************************/
+/**
+ * @brief 设置LCD光标位置
+ * 在LCD屏幕上设置光标的位置，用于后续文本或图形的绘制。
+ * @param Xpos X坐标位置
+ * @param Ypos Y坐标位置
+ */
 void LCD_SetCursor(uint16_t Xpos, uint16_t Ypos)
 {
 	LCD_SetWindows(Xpos, Ypos, Xpos, Ypos);
 }
 
-/*****************************************************************************
- * @name       :void LCD_direction(uint8_t direction)
- * @date       :2018-08-09
- * @function   :Setting the display direction of LCD screen
- * @parameters :direction:0-0 degree
-						  1-90 degree
-													2-180 degree
-													3-270 degree
- * @retvalue   :None
-******************************************************************************/
+/**
+ * @brief 设置LCD屏幕的显示方向。
+ * 根据传入的方向参数，配置LCD的显示方向。
+ * @param direction 要设置的LCD显示方向：
+ *                   0 - 0度（默认方向）
+ *                   1 - 90度（顺时针旋转）
+ *                   2 - 180度（旋转半圈）
+ *                   3 - 270度（逆时针旋转）
+ * @return None
+ * @note 该函数通过写入特定的寄存器值来改变LCD的显示方向。
+ */
 void LCD_direction(uint8_t direction)
 {
+	// 定义设置X坐标、Y坐标、写入RAM和读取RAM的命令代码
 	lcddev.setxcmd = 0x2A;
 	lcddev.setycmd = 0x2B;
 	lcddev.wramcmd = 0x2C;
 	lcddev.rramcmd = 0x2E;
+
+	// 确保方向值在0到3之间
 	lcddev.dir = direction % 4;
+
+	// 根据方向值，设置LCD的宽度、高度和写入寄存器0x36来改变显示方向
 	switch (lcddev.dir)
 	{
-	case 0:
+	case 0: // 0度方向，宽度和高度保持默认值
 		lcddev.width = LCD_W;
 		lcddev.height = LCD_H;
-		LCD_WriteReg(0x36, (1 << 3) | (1 << 6));
+		LCD_WriteReg(0x36, (1 << 3) | (1 << 6)); // 写入寄存器0x36，设置扫描方向
 		break;
-	case 1:
+	case 1: // 90度方向，交换宽度和高度的值
 		lcddev.width = LCD_H;
 		lcddev.height = LCD_W;
-		LCD_WriteReg(0x36, (1 << 3) | (1 << 5));
+		LCD_WriteReg(0x36, (1 << 3) | (1 << 5)); // 写入寄存器0x36，设置扫描方向
 		break;
-	case 2:
+	case 2: // 180度方向，宽度和高度保持默认值，但寄存器0x36的值不同
 		lcddev.width = LCD_W;
 		lcddev.height = LCD_H;
-		LCD_WriteReg(0x36, (1 << 3) | (1 << 7));
+		LCD_WriteReg(0x36, (1 << 3) | (1 << 7)); // 写入寄存器0x36，设置扫描方向
 		break;
-	case 3:
+	case 3: // 270度方向，交换宽度和高度的值，并设置额外的扫描方向位
 		lcddev.width = LCD_H;
 		lcddev.height = LCD_W;
-		LCD_WriteReg(0x36, (1 << 3) | (1 << 7) | (1 << 6) | (1 << 5));
+		LCD_WriteReg(0x36, (1 << 3) | (1 << 7) | (1 << 6) | (1 << 5)); // 写入寄存器0x36，设置扫描方向
 		break;
-	default:
+	default: // 默认值，不进行任何操作
 		break;
 	}
 }
 
+/**
+ * @brief 读取LCD屏幕ID
+ * 通过向LCD屏幕发送指令并读取返回的数据，获取LCD屏幕的ID信息。
+ * @return 返回LCD屏幕的ID值，该ID值是一个16位无符号整数。
+ */
 uint16_t LCD_Read_ID(void)
 {
 	uint8_t i, val[3] = {0};

@@ -28,6 +28,15 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+/**
+ * @author Zeruns
+ * @brief 基于STM32F407的LVGL工程模板（MSP3526屏幕）
+ * @version 0.1
+ * @date 2024-05-21
+ * @copyright Copyright (c) 2024
+ * @作者个人博客： https://blog.zeruns.tech
+ * @B站空间： https://space.bilibili.com/8320520
+ */
 #include "LCD.h"
 #include "lvgl.h"
 #include "lv_port_disp.h"
@@ -115,10 +124,11 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  USART1_Printf("LCD ID:%d\r\n",LCD_Read_ID());
 
-  lv_demo_widgets();
+  //lv_demo_widgets();
   // lv_demo_stress();
-  // lv_demo_benchmark();
+  lv_demo_benchmark();
   //lv_demo_music();
 
   while (1)
@@ -163,7 +173,7 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 4;
-  RCC_OscInitStruct.PLL.PLLN = 168;
+  RCC_OscInitStruct.PLL.PLLN = 190;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = 4;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
