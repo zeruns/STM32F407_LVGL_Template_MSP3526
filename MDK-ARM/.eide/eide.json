@@ -1028,7 +1028,7 @@
     ]
   },
   "outDir": "build",
-  "deviceName": "STM32F407VETx",
+  "deviceName": "STM32F407VGTx",
   "packDir": ".pack/Keil/STM32F4xx_DFP.2.14.0",
   "miscInfo": {
     "uid": "5ae3c45ff33bc6c7d59279969aedc8a1"
@@ -1071,7 +1071,7 @@
               "id": 1,
               "mem": {
                 "startAddr": "0x08000000",
-                "size": "0x00080000"
+                "size": "0x00100000"
               },
               "isChecked": true,
               "isStartup": true

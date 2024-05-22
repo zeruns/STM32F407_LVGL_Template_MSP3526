@@ -62,20 +62,20 @@ osThreadId LVGL_TaskHandleHandle;
 
 /* USER CODE END FunctionPrototypes */
 
-void StartDefaultTask(void const * argument);
-void BlinkLED2_Task(void const * argument);
-void LVGL_TaskHandler_Task(void const * argument);
+void StartDefaultTask(void const *argument);
+void BlinkLED2_Task(void const *argument);
+void LVGL_TaskHandler_Task(void const *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
 /* GetIdleTaskMemory prototype (linked to static allocation support) */
-void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize );
+void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize);
 
 /* USER CODE BEGIN GET_IDLE_TASK_MEMORY */
 static StaticTask_t xIdleTaskTCBBuffer;
 static StackType_t xIdleStack[configMINIMAL_STACK_SIZE];
 
-void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize )
+void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize)
 {
   *ppxIdleTaskTCBBuffer = &xIdleTaskTCBBuffer;
   *ppxIdleTaskStackBuffer = &xIdleStack[0];
@@ -85,11 +85,12 @@ void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer, StackTy
 /* USER CODE END GET_IDLE_TASK_MEMORY */
 
 /**
-  * @brief  FreeRTOS initialization
-  * @param  None
-  * @retval None
-  */
-void MX_FREERTOS_Init(void) {
+ * @brief  FreeRTOS initialization
+ * @param  None
+ * @retval None
+ */
+void MX_FREERTOS_Init(void)
+{
   /* USER CODE BEGIN Init */
 
   /* USER CODE END Init */
@@ -126,7 +127,6 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
-
 }
 
 /* USER CODE BEGIN Header_StartDefaultTask */
@@ -136,7 +136,7 @@ void MX_FREERTOS_Init(void) {
  * @retval None
  */
 /* USER CODE END Header_StartDefaultTask */
-void StartDefaultTask(void const * argument)
+void StartDefaultTask(void const *argument)
 {
   /* USER CODE BEGIN StartDefaultTask */
 
@@ -155,7 +155,7 @@ void StartDefaultTask(void const * argument)
  * @retval None
  */
 /* USER CODE END Header_BlinkLED2_Task */
-void BlinkLED2_Task(void const * argument)
+void BlinkLED2_Task(void const *argument)
 {
   /* USER CODE BEGIN BlinkLED2_Task */
   /* Infinite loop */
@@ -174,21 +174,22 @@ void BlinkLED2_Task(void const * argument)
  * @retval None
  */
 /* USER CODE END Header_LVGL_TaskHandler_Task */
-void LVGL_TaskHandler_Task(void const * argument)
+void LVGL_TaskHandler_Task(void const *argument)
 {
   /* USER CODE BEGIN LVGL_TaskHandler_Task */
   lv_init();            // LVGL初始化
   lv_port_disp_init();  // LVGL显示初始化
   lv_port_indev_init(); // LVGL输入设备初始化
 
+  LCD_Switch_Dir(0); // 旋转屏幕方向
+
+  // LVGL自带示例程序
   lv_demo_widgets();
   //  lv_demo_stress();
-  // lv_demo_benchmark();
-  // lv_demo_music();
+  //  lv_demo_benchmark();
+  //  lv_demo_music();
 
   USART1_Printf("LCD ID:%d\r\n", LCD_Read_ID());
-
-  LCD_Switch_Dir(0); // 旋转屏幕方向
 
   /* Infinite loop */
   for (;;)

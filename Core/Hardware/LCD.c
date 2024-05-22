@@ -399,9 +399,9 @@ void LCD_Clear(uint16_t Color)
 void LCD_RESET(void)
 {
 	LCD_RST_CLR;
-	HAL_Delay(80);
+	osDelay(80);
 	LCD_RST_SET;
-	HAL_Delay(30);
+	osDelay(30);
 }
 
 /**
@@ -416,7 +416,7 @@ void LCD_Init(void)
 	//*************3.5 ST7796S IPS初始化**********//
 	LCD_WR_REG(0x11);
 
-	HAL_Delay(80); // Delay 120ms
+	osDelay(80); // Delay 120ms
 
 	LCD_WR_REG(0x36); // Memory Data Access Control MY,MX~~
 	LCD_WR_DATA(0x48);
@@ -501,7 +501,7 @@ void LCD_Init(void)
 	LCD_WR_REG(0xF0);
 	LCD_WR_DATA(0x69);
 
-	HAL_Delay(80);
+	osDelay(80);
 
 	LCD_WR_REG(0x21);
 
