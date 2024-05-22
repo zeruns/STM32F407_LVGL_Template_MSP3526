@@ -10,14 +10,13 @@ volatile _m_tp_dev tp_dev =
 };
 // 默认为touchtype=0的数据.
 
-/*****************************************************************************
- * @name       :uint8_t TP_Init(void)
- * @date       :2018-08-09
- * @function   :Initialization touch screen
- * @parameters :None
- * @retvalue   :0-no calibration
-								1-Has been calibrated
-******************************************************************************/
+/**
+ * @brief 初始化触摸屏
+ * 初始化触摸屏，并进行相关配置。
+ * @return 初始化结果
+ *         - 0：初始化成功
+ *         - 1：初始化失败
+ */
 uint8_t TP_Init(void)
 {
 	if (FT6336_Init())

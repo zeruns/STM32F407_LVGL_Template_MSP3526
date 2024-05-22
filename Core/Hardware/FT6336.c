@@ -11,16 +11,14 @@
 
 extern volatile uint8_t touch_flag;
 
-/*****************************************************************************
- * @name       :uint8_t FT5426_WR_Reg(uint16_t reg,uint8_t *buf,uint8_t len)
- * @date       :2020-05-13
- * @function   :Write data to ft5426 once
- * @parameters :reg:Start register address for written
-								buf:the buffer of data written
-								len:Length of data written
- * @retvalue   :0-Write succeeded
-								1-Write failed
-******************************************************************************/
+/**
+ * @brief 向FT6336寄存器写入数据
+ * 通过I2C通信，向FT6336的指定寄存器写入指定长度的数据。
+ * @param reg 寄存器地址
+ * @param buf 数据缓冲区指针
+ * @param len 数据长度
+ * @return 返回值始终为0，表示函数执行成功
+ */
 uint8_t FT6336_WR_Reg(uint16_t reg, uint8_t *buf, uint8_t len)
 {
 	uint8_t i;
@@ -37,15 +35,14 @@ uint8_t FT6336_WR_Reg(uint16_t reg, uint8_t *buf, uint8_t len)
 	return 0;
 }
 
-/*****************************************************************************
- * @name       :void FT5426_RD_Reg(uint16_t reg,uint8_t *buf,uint8_t len)
- * @date       :2020-05-13
- * @function   :Read data to ft5426 once
- * @parameters :reg:Start register address for read
-								buf:the buffer of data read
-								len:Length of data read
- * @retvalue   :none
-******************************************************************************/
+
+/**
+ * @brief 读取FT6336寄存器
+ * 通过I2C接口读取FT6336指定寄存器的值，并将读取到的数据保存到缓冲区中。
+ * @param reg 寄存器地址
+ * @param buf 存储读取数据的缓冲区指针
+ * @param len 读取数据的长度
+ */
 void FT6336_RD_Reg(uint16_t reg, uint8_t *buf, uint8_t len)
 {
 	uint8_t TxData[1] = {(reg & 0XFF)}; // 低8位地址
@@ -53,14 +50,11 @@ void FT6336_RD_Reg(uint16_t reg, uint8_t *buf, uint8_t len)
 	HAL_I2C_Master_Receive(FT6336_I2C, FT6336_ADDRESS, (uint8_t *)buf, len, FT6336_I2C_TIMEOUT);
 }
 
-/*****************************************************************************
- * @name       :uint8_t FT5426_Init(void)
- * @date       :2020-05-13
- * @function   :Initialize the ft5426 touch screen
- * @parameters :none
- * @retvalue   :0-Initialization successful
-								1-initialization failed
-******************************************************************************/
+/**
+ * @brief FT6336初始化
+ * 初始化FT6336触摸屏控制器，包括复位、读取设备ID等步骤。
+ * @return 初始化成功返回0，否则返回1
+ */
 uint8_t FT6336_Init(void)
 {
 	uint8_t temp[2];
@@ -107,15 +101,11 @@ uint8_t FT6336_Init(void)
 
 const uint16_t FT6336_TPX_TBL[2] = {FT_TP1_REG, FT_TP2_REG};
 
-/*****************************************************************************
- * @name       :uint8_t FT5426_Scan(void)
- * @date       :2020-05-13
- * @function   :Scan touch screen (query mode)
- * @parameters :none
- * @retvalue   :Current touch screen status
-								0-No touch
-								1-With touch
-******************************************************************************/
+/**
+ * @brief FT6336 扫描函数
+ * 扫描 FT6336 触摸屏的状态，并获取触摸点的坐标信息。
+ * @return 返回扫描结果，1 表示有触摸事件，0 表示无触摸事件
+ */
 uint8_t FT6336_Scan(void)
 {
 	uint8_t buf[4];
