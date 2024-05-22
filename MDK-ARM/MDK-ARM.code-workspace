@@ -4,10 +4,6 @@
             "path": "."
         }
     ],
-    "settings": {
-        "files.associations": {
-            "lcd.h": "c"
-        }
-    },
+    "settings": {},
     "extensions": {}
 }
