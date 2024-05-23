@@ -14,7 +14,7 @@ MCU超频后全屏刷新时帧率为9FPS左右，局部刷新时帧率为30+FPS�
 
 ## 效果图
 
-**效果演示视频：**
+**效果演示视频：**[https://www.bilibili.com/video/BV1Ni421S7ta/](https://www.bilibili.com/video/BV1Ni421S7ta/)
 
 ![](https://tc2.zeruns.tech/Pic/2024/05/IMG_8610_d1f71b2dff6c73b2c365e112ebf63743.jpg)
 

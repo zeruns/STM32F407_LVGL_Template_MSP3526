@@ -13,7 +13,7 @@ Electronic/MCU Technology Exchange Group: [820537762](https://qm.qq.com/q/ZmTfBb
 
 ## Screenshots
 
-**Demo Video:**
+**Demo Video:**[https://www.bilibili.com/video/BV1Ni421S7ta/](https://www.bilibili.com/video/BV1Ni421S7ta/)
 
 ![](https://tc2.zeruns.tech/Pic/2024/05/IMG_8610_d1f71b2dff6c73b2c365e112ebf63743.jpg)
 ![](https://tc2.zeruns.tech/Pic/2024/05/IMG_20240523_204546_58a3dbccac2304eaaea5e6b98ce231de.jpg)
