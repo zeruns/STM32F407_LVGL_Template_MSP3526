@@ -56,20 +56,21 @@
 osThreadId defaultTaskHandle;
 osThreadId BlinkLED2Handle;
 osThreadId LVGL_TaskHandleHandle;
+osSemaphoreId SPI1_Send_OKHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
 
 /* USER CODE END FunctionPrototypes */
 
-void StartDefaultTask(void const *argument);
-void BlinkLED2_Task(void const *argument);
-void LVGL_TaskHandler_Task(void const *argument);
+void StartDefaultTask(void const * argument);
+void BlinkLED2_Task(void const * argument);
+void LVGL_TaskHandler_Task(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
 /* GetIdleTaskMemory prototype (linked to static allocation support) */
-void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize);
+void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize );
 
 /* USER CODE BEGIN GET_IDLE_TASK_MEMORY */
 static StaticTask_t xIdleTaskTCBBuffer;
@@ -85,12 +86,11 @@ void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer, StackTyp
 /* USER CODE END GET_IDLE_TASK_MEMORY */
 
 /**
- * @brief  FreeRTOS initialization
- * @param  None
- * @retval None
- */
-void MX_FREERTOS_Init(void)
-{
+  * @brief  FreeRTOS initialization
+  * @param  None
+  * @retval None
+  */
+void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN Init */
 
   /* USER CODE END Init */
@@ -98,6 +98,11 @@ void MX_FREERTOS_Init(void)
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */
   /* USER CODE END RTOS_MUTEX */
+
+  /* Create the semaphores(s) */
+  /* definition and creation of SPI1_Send_OK */
+  osSemaphoreDef(SPI1_Send_OK);
+  SPI1_Send_OKHandle = osSemaphoreCreate(osSemaphore(SPI1_Send_OK), 1);
 
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
@@ -127,6 +132,7 @@ void MX_FREERTOS_Init(void)
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
+
 }
 
 /* USER CODE BEGIN Header_StartDefaultTask */
@@ -136,7 +142,7 @@ void MX_FREERTOS_Init(void)
  * @retval None
  */
 /* USER CODE END Header_StartDefaultTask */
-void StartDefaultTask(void const *argument)
+void StartDefaultTask(void const * argument)
 {
   /* USER CODE BEGIN StartDefaultTask */
 
@@ -150,12 +156,13 @@ void StartDefaultTask(void const *argument)
 
 /* USER CODE BEGIN Header_BlinkLED2_Task */
 /**
- * @brief Function implementing the BlinkLED2 thread.
+ * @brief BlinkLED2线程，用于LED2闪烁.
  * @param argument: Not used
+ * @note LED2闪烁
  * @retval None
  */
 /* USER CODE END Header_BlinkLED2_Task */
-void BlinkLED2_Task(void const *argument)
+void BlinkLED2_Task(void const * argument)
 {
   /* USER CODE BEGIN BlinkLED2_Task */
   /* Infinite loop */
@@ -174,7 +181,7 @@ void BlinkLED2_Task(void const *argument)
  * @retval None
  */
 /* USER CODE END Header_LVGL_TaskHandler_Task */
-void LVGL_TaskHandler_Task(void const *argument)
+void LVGL_TaskHandler_Task(void const * argument)
 {
   /* USER CODE BEGIN LVGL_TaskHandler_Task */
   lv_init();            // LVGL初始化

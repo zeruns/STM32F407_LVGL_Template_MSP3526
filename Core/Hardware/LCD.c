@@ -286,6 +286,7 @@ void LCD_Fill(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, uint16_t color
 }
 
 /**
+ * @brief 填充LCD屏幕指定矩形区域
  * 使用LVGL库的颜色值填充LCD指定区域。
  * @param sx 起始X坐标
  * @param sy 起始Y坐标
@@ -331,8 +332,7 @@ CCMRAM void LCD_Fill_LVGL(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, lv
 				}
 				else
 				{
-					while (HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY)
-						;																			// 等待SPI总线空闲
+					while (HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY);						// 等待SPI总线空闲
 					uint8_t *temp = &data[((uint16_t)((i + 1) / data_split) - 1) * data_split * 2]; // 获取剩余数据
 					Lcd_WriteData_DMA(temp, data_split * 2);										// 以DMA方式发送数据
 				}

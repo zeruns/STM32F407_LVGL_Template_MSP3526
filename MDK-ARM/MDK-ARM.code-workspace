@@ -4,6 +4,10 @@
             "path": "."
         }
     ],
-    "settings": {},
+    "settings": {
+        "files.associations": {
+            "lv_port_disp.h": "c"
+        }
+    },
     "extensions": {}
 }
