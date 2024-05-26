@@ -173,7 +173,7 @@ void MX_FREERTOS_Init(void) {
 void StartDefaultTask(void const * argument)
 {
   /* USER CODE BEGIN StartDefaultTask */
-
+  USART1_Printf("%d : Run StartDefaultTask\r\n", osKernelSysTick());
   /* Infinite loop */
   for (;;)
   {
@@ -193,6 +193,7 @@ void StartDefaultTask(void const * argument)
 void BlinkLED2_Task(void const * argument)
 {
   /* USER CODE BEGIN BlinkLED2_Task */
+  USART1_Printf("%d : Run BlinkLED2_Task\r\n", osKernelSysTick());
   /* Infinite loop */
   for (;;)
   {
@@ -212,18 +213,21 @@ void BlinkLED2_Task(void const * argument)
 void LVGL_TaskHandler_Task(void const * argument)
 {
   /* USER CODE BEGIN LVGL_TaskHandler_Task */
+  USART1_Printf("%d : Run LVGL_TaskHandler_Task\r\n", osKernelSysTick());
   lv_init();           // LVGL初始化
+  USART1_Printf("%d : lv_init() Finish\r\n", osKernelSysTick());
   lv_port_disp_init(); // LVGL显示初始化
-
+  USART1_Printf("%d : lv_port_disp_init() Finish\r\n", osKernelSysTick());
   LCD_Switch_Dir(0); // 旋转屏幕方向
+  USART1_Printf("%d : LCD_Switch_Dir(0) Finish\r\n", osKernelSysTick());
 
   // LVGL自带示例程序
-  lv_demo_widgets();
+  //lv_demo_widgets();
   //  lv_demo_stress();
-  //  lv_demo_benchmark();
+    lv_demo_benchmark();
   //  lv_demo_music();
 
-  USART1_Printf("LCD ID:%d\r\n", LCD_Read_ID());
+  USART1_Printf("%d : LCD ID:%d\r\n", osKernelSysTick(), LCD_Read_ID());
 
   /* Infinite loop */
   for (;;)
@@ -245,6 +249,7 @@ void FT6336_Scan_Task(void const * argument)
 {
   /* USER CODE BEGIN FT6336_Scan_Task */
   lv_port_indev_init(); // LVGL输入设备初始化
+  USART1_Printf("%d : lv_port_indev_init() Finish\r\n", osKernelSysTick());
   /* Infinite loop */
   for (;;)
   {

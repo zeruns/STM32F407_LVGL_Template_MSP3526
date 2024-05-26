@@ -20,82 +20,85 @@
 #include <stdint.h>
 
 /*====================
-   COLOR SETTINGS
+   颜色设置
  *====================*/
 
-/*Color depth: 1 (1 byte per pixel), 8 (RGB332), 16 (RGB565), 32 (ARGB8888)*/
+/* 颜色深度：1 (每个像素1bit), 8 (RGB332), 16 (RGB565), 32 (ARGB8888) */
 #define LV_COLOR_DEPTH 16
 
-/*Swap the 2 bytes of RGB565 color. Useful if the display has an 8-bit interface (e.g. SPI)*/
+/* 交换RGB565颜色的2个字节。如果显示设备有8位接口（例如SPI），这很有用 */
 #define LV_COLOR_16_SWAP 0
 
-/*Enable features to draw on transparent background.
- *It's required if opa, and transform_* style properties are used.
- *Can be also used if the UI is above another layer, e.g. an OSD menu or video player.*/
+/* 启用绘制透明背景的功能。
+ * 如果使用了opa和transform_*样式属性，则需要此功能。
+ * 如果UI位于另一层之上，例如OSD菜单或视频播放器，也可以使用。 */
 #define LV_COLOR_SCREEN_TRANSP 0
 
-/* Adjust color mix functions rounding. GPUs might calculate color mix (blending) differently.
- * 0: round down, 64: round up from x.75, 128: round up from half, 192: round up from x.25, 254: round up */
+/* 调整颜色混合功能的四舍五入。GPU可能以不同的方式计算颜色混合（混合）。
+ * 0: 向下舍入, 64: 从x.75向上舍入, 128: 从一半向上舍入, 192: 从x.25向上舍入, 254: 向上舍入 */
 #define LV_COLOR_MIX_ROUND_OFS 0
 
-/*Images pixels with this color will not be drawn if they are chroma keyed)*/
-#define LV_COLOR_CHROMA_KEY lv_color_hex(0x00ff00)         /*pure green*/
+/* 图像像素如果具有此颜色将被视为透明，不会被绘制（色键）)*/
+#define LV_COLOR_CHROMA_KEY lv_color_hex(0x00ff00)         /* 纯绿色 */
 
 /*=========================
    MEMORY SETTINGS
  *=========================*/
 
-/*1: use custom malloc/free, 0: use the built-in `lv_mem_alloc()` and `lv_mem_free()`*/
+/* 1: 使用自定义的malloc/free，0: 使用内置的 `lv_mem_alloc()` 和 `lv_mem_free()` */
 #define LV_MEM_CUSTOM 0
 #if LV_MEM_CUSTOM == 0
-    /*Size of the memory available for `lv_mem_alloc()` in bytes (>= 2kB)*/
+    /* 为 `lv_mem_alloc()` 分配的内存大小（字节）（>= 2kB）*/
     #define LV_MEM_SIZE (48U * 1024U)          /*[bytes]*/
 
-    /*Set an address for the memory pool instead of allocating it as a normal array. Can be in external SRAM too.*/
+    /* 设置内存池的地址，而不是将其作为普通数组分配。可以位于外部SRAM中。*/
     #define LV_MEM_ADR 0     /*0: unused*/
-    /*Instead of an address give a memory allocator that will be called to get a memory pool for LVGL. E.g. my_malloc*/
+    /* 不指定地址，而是提供一个内存分配器，LVGL将调用它来获取内存池。例如 my_malloc*/
     #if LV_MEM_ADR == 0
         #undef LV_MEM_POOL_INCLUDE
         #undef LV_MEM_POOL_ALLOC
     #endif
 
 #else       /*LV_MEM_CUSTOM*/
-    #define LV_MEM_CUSTOM_INCLUDE <stdlib.h>   /*Header for the dynamic memory function*/
+    #define LV_MEM_CUSTOM_INCLUDE <stdlib.h>   /* 自定义内存函数的头文件 */
     #define LV_MEM_CUSTOM_ALLOC   malloc
     #define LV_MEM_CUSTOM_FREE    free
     #define LV_MEM_CUSTOM_REALLOC realloc
 #endif     /*LV_MEM_CUSTOM*/
 
-/*Number of the intermediate memory buffer used during rendering and other internal processing mechanisms.
- *You will see an error log message if there wasn't enough buffers. */
+/* 在渲染和其他内部处理机制中使用的中级内存缓冲区的数量。
+ * 如果缓冲区不足，你将会看到一个错误日志消息。 */
 #define LV_MEM_BUF_MAX_NUM 16
 
-/*Use the standard `memcpy` and `memset` instead of LVGL's own functions. (Might or might not be faster).*/
+/* 使用标准的 `memcpy` 和 `memset` 函数，而不是LVGL自带的函数。（可能更快或更慢）。*/
 #define LV_MEMCPY_MEMSET_STD 0
 
 /*====================
    HAL SETTINGS
  *====================*/
 
-/*Default display refresh period. LVG will redraw changed areas with this period time*/
+/*定义默认显示刷新周期。LVGL将使用此周期时间重新绘制更改的区域。*/
 #define LV_DISP_DEF_REFR_PERIOD 33      /*[ms]*/
 
-/*Input device read period in milliseconds*/
+/*定义输入设备的读取周期（以毫秒为单位）*/
 #define LV_INDEV_DEF_READ_PERIOD 10     /*[ms]*/
 
-/*Use a custom tick source that tells the elapsed time in milliseconds.
- *It removes the need to manually update the tick with `lv_tick_inc()`)*/
+/* 使用一个自定义的时钟源，它可以告诉流逝的时间（以毫秒为单位）。
+ * 这样就无需手动使用 `lv_tick_inc()` 更新时钟了。 */
 #define LV_TICK_CUSTOM 1
 #if LV_TICK_CUSTOM
-    #define LV_TICK_CUSTOM_INCLUDE "cmsis_os.h"         /*Header for the system time function*/
-    #define LV_TICK_CUSTOM_SYS_TIME_EXPR (osKernelSysTick())    /*Expression evaluating to current system time in ms*/
-    /*If using lvgl as ESP32 component*/
+    #define LV_TICK_CUSTOM_INCLUDE "cmsis_os.h"         /* 系统时间函数的头文件 */
+    #define LV_TICK_CUSTOM_SYS_TIME_EXPR (osKernelSysTick())     /* 表达式，用于计算当前的系统时间（以毫秒为单位） */
+    /* 如果将lvgl用作ESP32的组件 */
     // #define LV_TICK_CUSTOM_INCLUDE "esp_timer.h"
     // #define LV_TICK_CUSTOM_SYS_TIME_EXPR ((esp_timer_get_time() / 1000LL))
 #endif   /*LV_TICK_CUSTOM*/
 
-/*Default Dot Per Inch. Used to initialize default sizes such as widgets sized, style paddings.
- *(Not so important, you can adjust it to modify default sizes and spaces)*/
+/* 
+ * 定义默认的每英寸点数（DPI）。
+ * 该宏用于初始化默认尺寸，例如小部件大小和样式填充。
+ * 这是一个不太重要的定义，您可以根据需要调整它来修改默认的尺寸和间距。
+ */
 #define LV_DPI_DEF 130     /*[px/inch]*/
 
 /*=======================
@@ -103,47 +106,47 @@
  *=======================*/
 
 /*-------------
- * Drawing
+ * 绘制
  *-----------*/
 
-/*Enable complex draw engine.
- *Required to draw shadow, gradient, rounded corners, circles, arc, skew lines, image transformations or any masks*/
+/* 启用复杂的绘制引擎。
+ * 需要 绘制阴影、渐变、圆角、圆形、圆弧、斜线、图像变换或任何遮罩 */
 #define LV_DRAW_COMPLEX 1
 #if LV_DRAW_COMPLEX != 0
 
-    /*Allow buffering some shadow calculation.
-    *LV_SHADOW_CACHE_SIZE is the max. shadow size to buffer, where shadow size is `shadow_width + radius`
-    *Caching has LV_SHADOW_CACHE_SIZE^2 RAM cost*/
+    /* 允许缓冲一些阴影计算。
+     * LV_SHADOW_CACHE_SIZE 是要缓冲的最大阴影大小，其中阴影大小是 `shadow_width + radius`
+     * 缓存有 LV_SHADOW_CACHE_SIZE^2 的RAM成本 */
     #define LV_SHADOW_CACHE_SIZE 0
 
-    /* Set number of maximally cached circle data.
-    * The circumference of 1/4 circle are saved for anti-aliasing
-    * radius * 4 bytes are used per circle (the most often used radiuses are saved)
-    * 0: to disable caching */
+    /* 设置最大缓存圆数据数量。
+     * 1/4圆的周长被保存用于反走样
+     * 每个圆使用 radius * 4 字节（最常使用的半径会被保存）
+     * 0: 禁用缓存 */
     #define LV_CIRCLE_CACHE_SIZE 4
 #endif /*LV_DRAW_COMPLEX*/
 
 /**
- * "Simple layers" are used when a widget has `style_opa < 255` to buffer the widget into a layer
- * and blend it as an image with the given opacity.
- * Note that `bg_opa`, `text_opa` etc don't require buffering into layer)
- * The widget can be buffered in smaller chunks to avoid using large buffers.
+ * 当一个控件（widget）的 `style_opa < 255` 时，使用"简单图层"将控件缓冲到一个图层中，
+ * 并以给定的不透明度（opacity）将其与背景混合。
+ * 注意 `bg_opa`, `text_opa` 等不需要缓冲到图层中。
+ * 控件可以被分成更小的部分进行缓冲，以避免使用大缓冲区。
  *
- * - LV_LAYER_SIMPLE_BUF_SIZE: [bytes] the optimal target buffer size. LVGL will try to allocate it
- * - LV_LAYER_SIMPLE_FALLBACK_BUF_SIZE: [bytes]  used if `LV_LAYER_SIMPLE_BUF_SIZE` couldn't be allocated.
+ * - LV_LAYER_SIMPLE_BUF_SIZE: [字节] 最佳目标缓冲区大小。LVGL将尝试分配它
+ * - LV_LAYER_SIMPLE_FALLBACK_BUF_SIZE: [字节] 如果 `LV_LAYER_SIMPLE_BUF_SIZE` 无法分配，将使用这个大小。
  *
- * Both buffer sizes are in bytes.
- * "Transformed layers" (where transform_angle/zoom properties are used) use larger buffers
- * and can't be drawn in chunks. So these settings affects only widgets with opacity.
+ * 两个缓冲区大小都以字节为单位。
+ * "变换图层"（使用了 transform_angle/zoom 属性的图层）使用更大的缓冲区，并且不能分块绘制。
+ * 因此，这些设置仅影响具有不透明度的控件。
  */
 #define LV_LAYER_SIMPLE_BUF_SIZE          (24 * 1024)
 #define LV_LAYER_SIMPLE_FALLBACK_BUF_SIZE (3 * 1024)
 
-/*Default image cache size. Image caching keeps the images opened.
- *If only the built-in image formats are used there is no real advantage of caching. (I.e. if no new image decoder is added)
- *With complex image decoders (e.g. PNG or JPG) caching can save the continuous open/decode of images.
- *However the opened images might consume additional RAM.
- *0: to disable caching*/
+/* 默认图像缓存大小。图像缓存保持图像处于打开状态。
+ * 如果只使用内置的图像格式，那么缓存并没有真正的优势。（例如，如果没有添加新的图像解码器）
+ * 对于复杂的图像解码器（例如 PNG 或 JPG），缓存可以节省持续打开/解码图像的操作。
+ * 但是打开的图像可能会消耗额外的RAM。
+ * 0: 禁用缓存 */
 #define LV_IMG_CACHE_DEF_SIZE 0
 
 /*Number of stops allowed per gradient. Increase this to allow more stops.
