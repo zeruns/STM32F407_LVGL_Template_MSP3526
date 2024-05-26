@@ -3,6 +3,12 @@
  ******************************************************************************
  * File Name          : freertos.c
  * Description        : Code for freertos applications
+ * @author  : Zeruns
+ * @brief   : 基于STM32F407的LVGL工程模板（MSP3526屏幕）,FreeRTOS版
+ * @version : 0.2
+ * @date    : 2024-05-27
+ * @作者个人博客  : https://blog.zeruns.tech
+ * @B站空间       : https://space.bilibili.com/8320520
  ******************************************************************************
  * @attention
  *
@@ -14,6 +20,23 @@
  * If no LICENSE file comes with this software, it is provided AS-IS.
  *
  ******************************************************************************
+ *    硬件接线：
+ *    LCD            MCU/开发板         功能描述
+ * ----------------------------------------------------------------------------
+ *    GND       ->      GND     ->    LCD屏电源地     
+ *    VCC       ->      5V      ->    LCD屏电源正极
+ *    LCD_CS    ->      PE6     ->    LCD屏SPI片选
+ *    LCD_RST   ->      PC1     ->    LCD屏复位
+ *    LCD_RS    ->      PC0     ->    LCD屏命令/数据选择
+ *    SDI(MOSI) ->      PB5     ->    LCD屏SPI数据线，主机输出从机输入
+ *    SCK       ->      PB3     ->    LCD屏SPI时钟线
+ *    LED       ->      3.3V（可以自己接IO口，用软件控制背光）
+ *    SDO(MISO) ->      PB4     ->    LCD屏SPI数据线，主机输入从机输出
+ *    CTP_SCL   ->      PB8     ->    电容触摸屏控制器I2C时钟线
+ *    CTP_RST   ->      PB7     ->    电容触摸屏控制器复位
+ *    CTP_SDA   ->      PB9     ->    电容触摸屏控制器I2C数据线
+ *    CTP_INT   ->      PB6     ->    电容触摸屏控制器中断信号
+ ****************************************************************************** 
  */
 /* USER CODE END Header */
 

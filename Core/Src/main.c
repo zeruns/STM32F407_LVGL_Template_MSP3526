@@ -4,9 +4,9 @@
  * @file    : main.c
  * @brief   : Main program body
  * @author  : Zeruns
- * @brief   : 基于STM32F407的LVGL工程模板（MSP3526屏幕）
- * @version : 0.1
- * @date    : 2024-05-21
+ * @brief   : 基于STM32F407的LVGL工程模板（MSP3526屏幕）,FreeRTOS版
+ * @version : 0.2
+ * @date    : 2024-05-27
  * @作者个人博客  : https://blog.zeruns.tech
  * @B站空间       : https://space.bilibili.com/8320520
  ******************************************************************************
