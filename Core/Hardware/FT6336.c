@@ -60,9 +60,9 @@ uint8_t FT6336_Init(void)
 	uint8_t temp[2];
 
 	FT_RST(GPIO_PIN_RESET); // 复位
-	HAL_Delay(10);
+	osDelay(10);
 	FT_RST(GPIO_PIN_SET); // 释放复位
-	HAL_Delay(500);
+	osDelay(500);
 	//	temp[0]=0;
 	//	FT6336_WR_Reg(FT_DEVIDE_MODE,temp,1);	//进入正常操作模式
 	//	FT6336_WR_Reg(FT_ID_G_MODE,temp,1);		//查询模式
@@ -115,8 +115,8 @@ uint8_t FT6336_Scan(void)
 	uint8_t mode;
 	static uint8_t t = 0; // 控制查询间隔,从而降低CPU占用率
 	t++;
-	if ((t % 10) == 0 || t < 10) // 每进入10次CTP_Scan函数才检测1次,从而节省CPU使用率
-	{
+	//if ((t % 10) == 0 || t < 10) // 每进入10次CTP_Scan函数才检测1次,从而节省CPU使用率
+	//{
 		FT6336_RD_Reg(FT_REG_NUM_FINGER, &mode, 1); // 读取触摸点的状态
 		if (mode && (mode < 3))
 		{
@@ -159,7 +159,7 @@ uint8_t FT6336_Scan(void)
 				mode = 0; // 读到的数据都是0,则忽略此次数据
 			t = 0;		  // 触发一次,则会最少连续监测10次,从而提高命中率
 		}
-	}
+	//}
 	if (mode == 0) // 无触摸点按下
 	{
 		if (tp_dev.sta & TP_PRES_DOWN) // 之前是被按下的

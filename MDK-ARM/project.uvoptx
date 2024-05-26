@@ -158,12 +158,12 @@
         <Ww>
           <count>0</count>
           <WinNumber>1</WinNumber>
-          <ItemText>ms_cnt_1</ItemText>
+          <ItemText>ms_cnt_1,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>1</count>
           <WinNumber>1</WinNumber>
-          <ItemText>ms_cnt_1,0x0A</ItemText>
+          <ItemText>ms_cnt_1,0x10</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>

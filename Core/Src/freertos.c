@@ -28,6 +28,7 @@
 #include "usart.h"
 #include "gpio.h"
 #include "LCD.h"
+#include "touch.h"
 #include "lvgl.h"
 #include "lv_port_disp.h"
 #include "lv_port_indev.h"
@@ -51,12 +52,13 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
-
+osSemaphoreId SPI1_Send_OK; // 定义信号量，用于SPI1发送完成标志
+uint8_t CTP_INT_Flag;       // 触摸屏中断标志位
 /* USER CODE END Variables */
 osThreadId defaultTaskHandle;
 osThreadId BlinkLED2Handle;
 osThreadId LVGL_TaskHandleHandle;
-osSemaphoreId SPI1_Send_OKHandle;
+osThreadId FT6336_ScanTaskHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -66,6 +68,7 @@ osSemaphoreId SPI1_Send_OKHandle;
 void StartDefaultTask(void const * argument);
 void BlinkLED2_Task(void const * argument);
 void LVGL_TaskHandler_Task(void const * argument);
+void FT6336_Scan_Task(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -99,13 +102,11 @@ void MX_FREERTOS_Init(void) {
   /* add mutexes, ... */
   /* USER CODE END RTOS_MUTEX */
 
-  /* Create the semaphores(s) */
-  /* definition and creation of SPI1_Send_OK */
-  osSemaphoreDef(SPI1_Send_OK);
-  SPI1_Send_OKHandle = osSemaphoreCreate(osSemaphore(SPI1_Send_OK), 1);
-
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
+  osSemaphoreDef(SPI1_Send_OK);                                   // 定义一个名为SPI1_Send_OK的信号量
+  SPI1_Send_OK = osSemaphoreCreate(osSemaphore(SPI1_Send_OK), 1); // 创建名为SPI1_Send_OK的信号量实例，并初始化为1。
+
   /* USER CODE END RTOS_SEMAPHORES */
 
   /* USER CODE BEGIN RTOS_TIMERS */
@@ -126,8 +127,12 @@ void MX_FREERTOS_Init(void) {
   BlinkLED2Handle = osThreadCreate(osThread(BlinkLED2), NULL);
 
   /* definition and creation of LVGL_TaskHandle */
-  osThreadDef(LVGL_TaskHandle, LVGL_TaskHandler_Task, osPriorityNormal, 0, 1024);
+  osThreadDef(LVGL_TaskHandle, LVGL_TaskHandler_Task, osPriorityNormal, 0, 2304);
   LVGL_TaskHandleHandle = osThreadCreate(osThread(LVGL_TaskHandle), NULL);
+
+  /* definition and creation of FT6336_ScanTask */
+  osThreadDef(FT6336_ScanTask, FT6336_Scan_Task, osPriorityAboveNormal, 0, 128);
+  FT6336_ScanTaskHandle = osThreadCreate(osThread(FT6336_ScanTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -184,9 +189,8 @@ void BlinkLED2_Task(void const * argument)
 void LVGL_TaskHandler_Task(void const * argument)
 {
   /* USER CODE BEGIN LVGL_TaskHandler_Task */
-  lv_init();            // LVGL初始化
-  lv_port_disp_init();  // LVGL显示初始化
-  lv_port_indev_init(); // LVGL输入设备初始化
+  lv_init();           // LVGL初始化
+  lv_port_disp_init(); // LVGL显示初始化
 
   LCD_Switch_Dir(0); // 旋转屏幕方向
 
@@ -205,6 +209,30 @@ void LVGL_TaskHandler_Task(void const * argument)
     osDelay(5);
   }
   /* USER CODE END LVGL_TaskHandler_Task */
+}
+
+/* USER CODE BEGIN Header_FT6336_Scan_Task */
+/**
+ * @brief Function implementing the FT6336_ScanTask thread.
+ * @param argument: Not used
+ * @retval None
+ */
+/* USER CODE END Header_FT6336_Scan_Task */
+void FT6336_Scan_Task(void const * argument)
+{
+  /* USER CODE BEGIN FT6336_Scan_Task */
+  lv_port_indev_init(); // LVGL输入设备初始化
+  /* Infinite loop */
+  for (;;)
+  {
+    if (CTP_INT_Flag == 1)
+    {
+      tp_dev.scan(); // 扫描触摸点
+      CTP_INT_Flag = 0;
+    }
+    osDelay(10);
+  }
+  /* USER CODE END FT6336_Scan_Task */
 }
 
 /* Private application code --------------------------------------------------*/

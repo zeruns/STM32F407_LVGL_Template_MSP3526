@@ -10,6 +10,8 @@ volatile _m_tp_dev tp_dev =
 };
 // 默认为touchtype=0的数据.
 
+extern uint8_t CTP_INT_Flag;       // 触摸屏中断标志位
+
 /**
  * @brief 初始化触摸屏
  * 初始化触摸屏，并进行相关配置。
@@ -37,6 +39,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 	if (GPIO_Pin == CTP_INT_Pin)
 	{
-		tp_dev.scan();
+		//tp_dev.scan();
+		CTP_INT_Flag=1;
 	}
 }

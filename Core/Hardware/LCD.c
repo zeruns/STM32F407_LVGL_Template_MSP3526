@@ -1,5 +1,7 @@
 #include "LCD.h"
 
+extern osSemaphoreId SPI1_Send_OK; // 定义信号量，用于SPI1发送完成标志
+
 /**
  * @brief ST7796 LCD驱动程序。
  * @作者个人博客： https://blog.zeruns.tech
@@ -27,7 +29,8 @@ void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi)
 {
 	if (hspi->Instance == SPI1) // 检查完成传输的SPI外设是否是SPI1
 	{
-		LCD_CS_SET; // LCD片选引脚置高电平，停止发送
+		LCD_CS_SET;						  // LCD片选引脚置高电平，停止发送
+		osSemaphoreRelease(SPI1_Send_OK); // 释放信号量，表示SPI1发送完成
 	}
 }
 
@@ -66,12 +69,12 @@ void SPI_Send2Byte(uint16_t Data)
  */
 void LCD_WR_REG(uint8_t data)
 {
-	while (HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY)
-		;				// 等待SPI总线空闲
-	LCD_CS_CLR;			// 选中LCD
-	LCD_RS_CLR;			// 设置为命令模式
-	SPI_SwapByte(data); // 发送命令字节
-	LCD_CS_SET;			// 取消选中LCD
+	osSemaphoreWait(SPI1_Send_OK, osWaitForever); // 等待SPI1发送完成的信号量
+	LCD_CS_CLR;									  // 选中LCD
+	LCD_RS_CLR;									  // 设置为命令模式
+	SPI_SwapByte(data);							  // 发送命令字节
+	LCD_CS_SET;									  // 取消选中LCD
+	osSemaphoreRelease(SPI1_Send_OK);			  // 释放信号量
 }
 
 /**
@@ -81,12 +84,12 @@ void LCD_WR_REG(uint8_t data)
  */
 void LCD_WR_DATA(uint8_t data)
 {
-	while (HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY)
-		;				// 等待SPI总线空闲
-	LCD_CS_CLR;			// 选中LCD
-	LCD_RS_SET;			// 设置为数据模式
-	SPI_SwapByte(data); // 发送数据
-	LCD_CS_SET;			// 取消选中LCD
+	osSemaphoreWait(SPI1_Send_OK, osWaitForever); // 等待SPI1发送完成的信号量
+	LCD_CS_CLR;									  // 选中LCD
+	LCD_RS_SET;									  // 设置为数据模式
+	SPI_SwapByte(data);							  // 发送数据
+	LCD_CS_SET;									  // 取消选中LCD
+	osSemaphoreRelease(SPI1_Send_OK);			  // 释放信号量
 }
 
 /**
@@ -97,15 +100,15 @@ void LCD_WR_DATA(uint8_t data)
 uint8_t LCD_RD_DATA(void)
 {
 	uint8_t data;
-	while (HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY)
-		;					   // 等待SPI总线空闲
-	LCD_CS_CLR;				   // 选中LCD
-	LCD_RS_SET;				   // 设置为数据模式
-	SPI1_SetSpeed(0);		   // 设置SPI速度为低速
-	data = SPI_SwapByte(0xFF); // 发送命令字节，并接收返回数据
-	SPI1_SetSpeed(1);		   // 设置SPI速度为高速
-	LCD_CS_SET;				   // 取消选中LCD
-	return data;			   // 返回读取到的数据
+	osSemaphoreWait(SPI1_Send_OK, osWaitForever); // 等待SPI1发送完成的信号量
+	LCD_CS_CLR;									  // 选中LCD
+	LCD_RS_SET;									  // 设置为数据模式
+	SPI1_SetSpeed(0);							  // 设置SPI速度为低速
+	data = SPI_SwapByte(0xFF);					  // 发送命令字节，并接收返回数据
+	SPI1_SetSpeed(1);							  // 设置SPI速度为高速
+	LCD_CS_SET;									  // 取消选中LCD
+	osSemaphoreRelease(SPI1_Send_OK);			  // 释放信号量
+	return data;								  // 返回读取到的数据
 }
 
 /**
@@ -158,12 +161,12 @@ void LCD_ReadRAM_Prepare(void)
  */
 void Lcd_WriteData_16Bit(uint16_t Data)
 {
-	while (HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY)
-		;				 // 等待SPI总线空闲
-	LCD_CS_CLR;			 // 选中LCD
-	LCD_RS_SET;			 // 设置为数据模式
-	SPI_Send2Byte(Data); // 发送数据
-	LCD_CS_SET;			 // 取消选中LCD
+	osSemaphoreWait(SPI1_Send_OK, osWaitForever); // 等待SPI1发送完成的信号量
+	LCD_CS_CLR;									  // 选中LCD
+	LCD_RS_SET;									  // 设置为数据模式
+	SPI_Send2Byte(Data);						  // 发送数据
+	LCD_CS_SET;									  // 取消选中LCD
+	osSemaphoreRelease(SPI1_Send_OK);			  // 释放信号量
 }
 
 /**
@@ -174,12 +177,12 @@ void Lcd_WriteData_16Bit(uint16_t Data)
  */
 void Lcd_WriteData(uint8_t *Data, uint32_t Size)
 {
-	while (HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY)
-		;												  // 等待SPI总线空闲
+	osSemaphoreWait(SPI1_Send_OK, osWaitForever);		  // 等待SPI1发送完成的信号量
 	LCD_CS_CLR;											  // LCD片选引脚置低电平，选中LCD
 	LCD_RS_SET;											  // LCD数据/命令引脚置高电平，设置为数据模式
 	HAL_SPI_Transmit(LCD_SPI, Data, Size, HAL_MAX_DELAY); // 发送数据
 	LCD_CS_SET;											  // LCD片选引脚置高电平，取消选中LCD
+	osSemaphoreRelease(SPI1_Send_OK);					  // 释放信号量
 }
 
 /**
@@ -190,8 +193,6 @@ void Lcd_WriteData(uint8_t *Data, uint32_t Size)
  */
 CCMRAM void Lcd_WriteData_DMA(uint8_t *Data, uint32_t Size)
 {
-	while (HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY)
-		;									   // 等待SPI总线空闲
 	LCD_CS_CLR;								   // LCD片选引脚置低电平，选中LCD
 	LCD_RS_SET;								   // LCD数据/命令引脚置高电平，设置为数据模式
 	HAL_SPI_Transmit_DMA(LCD_SPI, Data, Size); // 发送数据
@@ -205,21 +206,21 @@ CCMRAM void Lcd_WriteData_DMA(uint8_t *Data, uint32_t Size)
 uint16_t Lcd_ReadData_16Bit(void)
 {
 	uint16_t r, g;
-	while (HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY)
-		;						  // 等待SPI总线空闲
-	LCD_CS_CLR;					  // LCD片选引脚置低电平，选中LCD
-	LCD_RS_CLR;					  // LCD数据/命令引脚置低电平，设置为命令模式
-	SPI_SwapByte(lcddev.rramcmd); // 发送读GRAM命令
-	SPI1_SetSpeed(0);			  // 设置SPI速度为低速
-	LCD_RS_SET;					  // LCD数据/命令引脚置高电平，设置为数据模式
-	SPI_SwapByte(0xFF);			  // 发送数据
-	r = SPI_SwapByte(0xFF);		  // 接收高8位数据
-	g = SPI_SwapByte(0xFF);		  // 接收低8位数据
-	SPI1_SetSpeed(1);			  // 设置SPI速度为高速
-	LCD_CS_SET;					  // LCD片选引脚置高电平，取消选中LCD
-	r <<= 8;					  // 合并高8位数据
-	r |= g;						  // 合并低8位数据
-	return r;					  // 返回数据
+	osSemaphoreWait(SPI1_Send_OK, osWaitForever); // 等待SPI1发送完成的信号量
+	LCD_CS_CLR;									  // LCD片选引脚置低电平，选中LCD
+	LCD_RS_CLR;									  // LCD数据/命令引脚置低电平，设置为命令模式
+	SPI_SwapByte(lcddev.rramcmd);				  // 发送读GRAM命令
+	SPI1_SetSpeed(0);							  // 设置SPI速度为低速
+	LCD_RS_SET;									  // LCD数据/命令引脚置高电平，设置为数据模式
+	SPI_SwapByte(0xFF);							  // 发送数据
+	r = SPI_SwapByte(0xFF);						  // 接收高8位数据
+	g = SPI_SwapByte(0xFF);						  // 接收低8位数据
+	SPI1_SetSpeed(1);							  // 设置SPI速度为高速
+	LCD_CS_SET;									  // LCD片选引脚置高电平，取消选中LCD
+	osSemaphoreRelease(SPI1_Send_OK);			  // 释放信号量
+	r <<= 8;									  // 合并高8位数据
+	r |= g;										  // 合并低8位数据
+	return r;									  // 返回数据
 }
 
 /**
@@ -310,7 +311,7 @@ CCMRAM void LCD_Fill_LVGL(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, lv
 //	}
 
 // 数据分割值, 用于分批发送数据
-#define data_split 3000
+#define data_split 1500
 
 	uint8_t data[Pixel * 2]; // 创建一个数组用于存储颜色数据
 
@@ -321,35 +322,35 @@ CCMRAM void LCD_Fill_LVGL(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, lv
 		data[i * 2 + 1] = (uint8_t)(color_p->full); // 获取低8位数据
 		color_p++;									// 指向下一个颜色值
 
-		// 判断数据量是否大于10000，如果大于则分批发送数据
-		if (Pixel > 10000)
+		// 判断数据量是否大于3500，如果大于则分批发送数据
+		if (Pixel > 3500)
 		{
-			if ((i + 1) % data_split == 0)
+			if ((i + 1) % data_split == 0) // 每当达到分割值时
 			{
-				if ((i + 1) == data_split)
+				if ((i + 1) == data_split) // 第一批数据发送时
 				{
-					Lcd_WriteData_DMA(data, data_split * 2); // 以DMA方式发送数据
+					osSemaphoreWait(SPI1_Send_OK, osWaitForever); // 等待SPI1发送完成的信号量
+					Lcd_WriteData_DMA(data, data_split * 2);	  // 以DMA方式发送数据
 				}
-				else
+				else // 非第一批数据发送时
 				{
-					while (HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY);						// 等待SPI总线空闲
+					osSemaphoreWait(SPI1_Send_OK, osWaitForever);									// 等待SPI1发送完成的信号量
 					uint8_t *temp = &data[((uint16_t)((i + 1) / data_split) - 1) * data_split * 2]; // 获取剩余数据
 					Lcd_WriteData_DMA(temp, data_split * 2);										// 以DMA方式发送数据
+					//USART1_Printf("%d\r\n", (uint16_t)((i + 1) / data_split));
 				}
 			}
-			else if (((i + 1) % data_split > 0) && ((i + 1) > data_split) && (i == (Pixel - 1)))
+			else if (((i + 1) % data_split > 0) && ((i + 1) > data_split) && (i == (Pixel - 1))) // 最后一批数据发送时
 			{
-				if ((uint16_t)((i + 1) / data_split) == 1)
+				if ((uint16_t)((i + 1) / data_split) == 1) // 只有一批完整数据时发送第一批后剩余的数据
 				{
-					while (HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY)
-						;												 // 等待SPI总线空闲
+					osSemaphoreWait(SPI1_Send_OK, osWaitForever);		 // 等待SPI1发送完成的信号量
 					uint8_t *temp = &data[data_split * 2];				 // 获取剩余数据
 					Lcd_WriteData_DMA(temp, ((i + 1) % data_split) * 2); // 以DMA方式发送数据
 				}
-				else
+				else // 发送剩余数据
 				{
-					while (HAL_SPI_GetState(LCD_SPI) != HAL_SPI_STATE_READY)
-						;																	  // 等待SPI总线空闲
+					osSemaphoreWait(SPI1_Send_OK, osWaitForever);							  // 等待SPI1发送完成的信号量
 					uint8_t *temp = &data[(uint16_t)((i + 1) / data_split) * data_split * 2]; // 获取剩余数据
 					Lcd_WriteData_DMA(temp, ((i + 1) % data_split) * 2);
 				}
@@ -357,9 +358,10 @@ CCMRAM void LCD_Fill_LVGL(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, lv
 		}
 	}
 
-	if (Pixel <= 10000)
+	if (Pixel <= 3500)
 	{
-		// 要发送的数据小于10000*2字节时一次全部发送
+		osSemaphoreWait(SPI1_Send_OK, osWaitForever); // 等待SPI1发送完成的信号量
+		// 要发送的数据小于3500*2字节时一次全部发送
 		Lcd_WriteData_DMA(data, Pixel * 2);
 	}
 
@@ -386,7 +388,8 @@ void LCD_Clear(uint16_t Color)
 			data[n + 1] = (uint8_t)Color; // 获取低8位数据
 			n = n + 2;
 		}
-		Lcd_WriteData_DMA(data, lcddev.width * 2); // 以DMA方式发送数据
+		osSemaphoreWait(SPI1_Send_OK, osWaitForever); // 等待SPI1发送完成的信号量
+		Lcd_WriteData_DMA(data, lcddev.width * 2);	  // 以DMA方式发送数据
 		n = 0;
 	}
 }
@@ -662,7 +665,8 @@ void LCD_Switch_Dir(uint8_t direction)
 	{
 		lcddev.dir = 0;
 	}
-	else{
+	else
+	{
 		lcddev.dir = 4;
 	}
 }
