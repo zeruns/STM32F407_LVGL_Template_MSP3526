@@ -107,6 +107,10 @@ LVGL官网：[https://lvgl.io/](https://url.zeruns.tech/4q623)
 
 裸机版STM32F407+LVGL工程下载地址2：[https://pan.baidu.com/s/1vAhHijYd_aWvRr3_c1_WtA?pwd=ry4g](https://pan.baidu.com/s/1vAhHijYd_aWvRr3_c1_WtA?pwd=ry4g)
 
+**FreeRTOS版STM32F407+LVGL工程下载地址1：[https://www.123pan.com/s/2Y9Djv-CzevH.html](https://www.123pan.com/s/2Y9Djv-CzevH.html)
+
+FreeRTOS版STM32F407+LVGL工程下载地址2：[https://url.zeruns.tech/0iOHF](https://url.zeruns.tech/0iOHF)
+
 **程序Gitee开源地址：[https://gitee.com/zeruns/STM32F407_LVGL_Template_MSP3526](https://gitee.com/zeruns/STM32F407_LVGL_Template_MSP3526)**
 
 程序GitHub开源地址：[https://github.com/zeruns/STM32F407_LVGL_Template_MSP3526](https://github.com/zeruns/STM32F407_LVGL_Template_MSP3526)

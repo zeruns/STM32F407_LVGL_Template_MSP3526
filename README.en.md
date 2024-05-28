@@ -94,6 +94,10 @@ Download address 2 for screen resources: [https://url.zeruns.tech/gzBO4](https:/
 
 Download address 2 for STM32F407+LVGL bare metal project: [https://pan.baidu.com/s/1vAhHijYd_aWvRr3_c1_WtA?pwd=ry4g](https://pan.baidu.com/s/1vAhHijYd_aWvRr3_c1_WtA?pwd=ry4g)
 
+**FreeRTOS版STM32F407+LVGL工程下载地址1：[https://www.123pan.com/s/2Y9Djv-CzevH.html](https://www.123pan.com/s/2Y9Djv-CzevH.html)
+
+FreeRTOS版STM32F407+LVGL工程下载地址2：[https://url.zeruns.tech/0iOHF](https://url.zeruns.tech/0iOHF)
+
 **Latest version of the program with FreeRTOS is in the Gitee and GitHub open source addresses, and the bare metal version is in the release version, version number 0.1.3.**
 
 I ported it according to the tutorial of Zhengdian Yuanzi.
