@@ -23,7 +23,7 @@
  *    硬件接线：
  *    LCD            MCU/开发板         功能描述
  * ----------------------------------------------------------------------------
- *    GND       ->      GND     ->    LCD屏电源地     
+ *    GND       ->      GND     ->    LCD屏电源地
  *    VCC       ->      5V      ->    LCD屏电源正极
  *    LCD_CS    ->      PE6     ->    LCD屏SPI片选
  *    LCD_RST   ->      PC1     ->    LCD屏复位
@@ -36,7 +36,7 @@
  *    CTP_RST   ->      PB7     ->    电容触摸屏控制器复位
  *    CTP_SDA   ->      PB9     ->    电容触摸屏控制器I2C数据线
  *    CTP_INT   ->      PB6     ->    电容触摸屏控制器中断信号
- ****************************************************************************** 
+ ******************************************************************************
  */
 /* USER CODE END Header */
 
@@ -88,15 +88,15 @@ osThreadId FT6336_ScanTaskHandle;
 
 /* USER CODE END FunctionPrototypes */
 
-void StartDefaultTask(void const * argument);
-void BlinkLED2_Task(void const * argument);
-void LVGL_TaskHandler_Task(void const * argument);
-void FT6336_Scan_Task(void const * argument);
+void StartDefaultTask(void const *argument);
+void BlinkLED2_Task(void const *argument);
+void LVGL_TaskHandler_Task(void const *argument);
+void FT6336_Scan_Task(void const *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
 /* GetIdleTaskMemory prototype (linked to static allocation support) */
-void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize );
+void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize);
 
 /* USER CODE BEGIN GET_IDLE_TASK_MEMORY */
 static StaticTask_t xIdleTaskTCBBuffer;
@@ -112,11 +112,12 @@ void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer, StackTyp
 /* USER CODE END GET_IDLE_TASK_MEMORY */
 
 /**
-  * @brief  FreeRTOS initialization
-  * @param  None
-  * @retval None
-  */
-void MX_FREERTOS_Init(void) {
+ * @brief  FreeRTOS initialization
+ * @param  None
+ * @retval None
+ */
+void MX_FREERTOS_Init(void)
+{
   /* USER CODE BEGIN Init */
 
   /* USER CODE END Init */
@@ -160,7 +161,6 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
-
 }
 
 /* USER CODE BEGIN Header_StartDefaultTask */
@@ -170,7 +170,7 @@ void MX_FREERTOS_Init(void) {
  * @retval None
  */
 /* USER CODE END Header_StartDefaultTask */
-void StartDefaultTask(void const * argument)
+void StartDefaultTask(void const *argument)
 {
   /* USER CODE BEGIN StartDefaultTask */
   USART1_Printf("%d : Run StartDefaultTask\r\n", osKernelSysTick());
@@ -190,7 +190,7 @@ void StartDefaultTask(void const * argument)
  * @retval None
  */
 /* USER CODE END Header_BlinkLED2_Task */
-void BlinkLED2_Task(void const * argument)
+void BlinkLED2_Task(void const *argument)
 {
   /* USER CODE BEGIN BlinkLED2_Task */
   USART1_Printf("%d : Run BlinkLED2_Task\r\n", osKernelSysTick());
@@ -210,11 +210,11 @@ void BlinkLED2_Task(void const * argument)
  * @retval None
  */
 /* USER CODE END Header_LVGL_TaskHandler_Task */
-void LVGL_TaskHandler_Task(void const * argument)
+void LVGL_TaskHandler_Task(void const *argument)
 {
   /* USER CODE BEGIN LVGL_TaskHandler_Task */
   USART1_Printf("%d : Run LVGL_TaskHandler_Task\r\n", osKernelSysTick());
-  lv_init();           // LVGL初始化
+  lv_init(); // LVGL初始化
   USART1_Printf("%d : lv_init() Finish\r\n", osKernelSysTick());
   lv_port_disp_init(); // LVGL显示初始化
   USART1_Printf("%d : lv_port_disp_init() Finish\r\n", osKernelSysTick());
@@ -222,9 +222,9 @@ void LVGL_TaskHandler_Task(void const * argument)
   USART1_Printf("%d : LCD_Switch_Dir(0) Finish\r\n", osKernelSysTick());
 
   // LVGL自带示例程序
-  //lv_demo_widgets();
+  lv_demo_widgets();
   //  lv_demo_stress();
-    lv_demo_benchmark();
+  //  lv_demo_benchmark();
   //  lv_demo_music();
 
   USART1_Printf("%d : LCD ID:%d\r\n", osKernelSysTick(), LCD_Read_ID());
@@ -233,7 +233,7 @@ void LVGL_TaskHandler_Task(void const * argument)
   for (;;)
   {
     lv_task_handler(); // LVGL任务处理
-    osDelay(5);
+    osDelay(5);        // 延时5ms
   }
   /* USER CODE END LVGL_TaskHandler_Task */
 }
@@ -245,7 +245,7 @@ void LVGL_TaskHandler_Task(void const * argument)
  * @retval None
  */
 /* USER CODE END Header_FT6336_Scan_Task */
-void FT6336_Scan_Task(void const * argument)
+void FT6336_Scan_Task(void const *argument)
 {
   /* USER CODE BEGIN FT6336_Scan_Task */
   lv_port_indev_init(); // LVGL输入设备初始化

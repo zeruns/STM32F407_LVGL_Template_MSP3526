@@ -311,7 +311,7 @@ CCMRAM void LCD_Fill_LVGL(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, lv
 //	}
 
 // 数据分割值, 用于分批发送数据
-#define data_split 2000
+#define data_split 8000
 
 	uint8_t data[Pixel * 2]; // 创建一个数组用于存储颜色数据
 
@@ -322,8 +322,8 @@ CCMRAM void LCD_Fill_LVGL(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, lv
 		data[i * 2 + 1] = (uint8_t)(color_p->full); // 获取低8位数据
 		color_p++;									// 指向下一个颜色值
 
-		// 判断数据量是否大于5000，如果大于则分批发送数据
-		if (Pixel > 5000)
+		// 判断数据量是否大于20000，如果大于则分批发送数据
+		if (Pixel > 20000)
 		{
 			if ((i + 1) % data_split == 0) // 每当达到分割值时
 			{
@@ -358,10 +358,10 @@ CCMRAM void LCD_Fill_LVGL(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, lv
 		}
 	}
 
-	if (Pixel <= 5000)
+	if (Pixel <= 20000)
 	{
 		osSemaphoreWait(SPI1_Send_OK, osWaitForever); // 等待SPI1发送完成的信号量
-		// 要发送的数据小于5000*2字节时一次全部发送
+		// 要发送的数据小于20000*2字节时一次全部发送
 		Lcd_WriteData_DMA(data, Pixel * 2);
 	}
 
